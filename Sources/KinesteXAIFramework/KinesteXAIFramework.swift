@@ -60,9 +60,26 @@ struct WebViewWrapperiOS: UIViewRepresentable {
     var onMessageReceived: (WebViewMessage) -> Void
     
     func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView()
+        let contentController = WKUserContentController()
+        let preferences = WKPreferences()
+        // important! Please enable javascript
+        preferences.javaScriptEnabled = true
+
+        let config = WKWebViewConfiguration()
+        config.userContentController = contentController
+        config.preferences = preferences
+        config.allowsInlineMediaPlayback = true
+
+        let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
-        webView.load(URLRequest(url: url))
+        contentController.add(context.coordinator, name: "listener")
+
+         // specify the background color of the webview based on your KinesteX's theme
+         webView.backgroundColor = .black
+         webView.scrollView.backgroundColor = .black
+          
+         webView.load(URLRequest(url: url))
+        
         return webView
     }
     
@@ -105,6 +122,7 @@ struct WebViewWrapperiOS: UIViewRepresentable {
         }
         
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+            print("Received message: \(message.body)")
             if message.name == "listener", let messageBody = message.body as? String {
                 handle(message: messageBody)
             }
@@ -171,10 +189,28 @@ struct WebViewWrappermacOS: NSViewRepresentable {
     @Binding var isLoading: Bool
     var onMessageReceived: (WebViewMessage) -> Void
     
+    
     func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView()
+        let contentController = WKUserContentController()
+        let preferences = WKPreferences()
+        // important! Please enable javascript
+        preferences.javaScriptEnabled = true
+
+        let config = WKWebViewConfiguration()
+        config.userContentController = contentController
+        config.preferences = preferences
+        config.allowsInlineMediaPlayback = true
+
+        let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
-        webView.load(URLRequest(url: url))
+        contentController.add(context.coordinator, name: "listener")
+
+         // specify the background color of the webview based on your KinesteX's theme
+         webView.backgroundColor = .black
+         webView.scrollView.backgroundColor = .black
+          
+         webView.load(URLRequest(url: url))
+        
         return webView
     }
     
