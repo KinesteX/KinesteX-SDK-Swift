@@ -105,51 +105,53 @@ struct WebViewWrapperiOS: UIViewRepresentable {
         }
         
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-               guard let messageBody = message.body as? String else { return }
-               handle(message: messageBody)
-           }
-           
-           func handle(message: String) {
-               guard let data = message.data(using: .utf8),
-                     let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                     let type = json["type"] as? String else {
-                   print("Could not parse JSON message from WebView.")
-                   return
-               }
-               
-               let messageData = json["data"] as? String ?? ""
-               
-               // Using the currentTime function as described, ensure it's defined or adjust as needed
-               
-               let webViewMessage: WebViewMessage
-               switch type {
-               case "kinestex_launched":
-                   webViewMessage = .kinestexLaunched(messageData)
-               case "finished_workout":
-                   webViewMessage = .finishedWorkout("\(messageData)")
-               case "error_occured":
-                   webViewMessage = .errorOccurred("\(messageData)")
-               case "exercise_completed":
-                   webViewMessage = .exerciseCompleted("\(messageData)")
-               case "exitApp":
-                   webViewMessage = .exitApp("User closed workout window")
-               case "workoutOpened":
-                   webViewMessage = .workoutOpened(messageData)
-               case "workoutStarted":
-                   webViewMessage = .workoutStarted(messageData)
-               case "plan_unlocked":
-                   webViewMessage = .planUnlocked(messageData)
-               default:
-                   webViewMessage = .unknown("Unknown message type: \(type) with data: \(messageData)")
-               }
-               
-               DispatchQueue.main.async {
-                   self.onMessageReceived(webViewMessage)
-               }
-           }
-           
-       
-    }
+            if message.name == "listener", let messageBody = message.body as? String {
+                handle(message: messageBody)
+            }
+        }
+            
+            func handle(message: String) {
+                guard let data = message.data(using: .utf8),
+                      let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                      let type = json["type"] as? String else {
+                    print("Could not parse JSON message from WebView.")
+                    return
+                }
+                
+                let messageData = json["data"] as? String ?? ""
+                
+                // Using the currentTime function as described, ensure it's defined or adjust as needed
+                
+                let webViewMessage: WebViewMessage
+                switch type {
+                case "kinestex_launched":
+                    webViewMessage = .kinestexLaunched(messageData)
+                case "finished_workout":
+                    webViewMessage = .finishedWorkout(messageData)
+                case "error_occured":
+                    webViewMessage = .errorOccurred(messageData)
+                case "exercise_completed":
+                    webViewMessage = .exerciseCompleted(messageData)
+                case "exitApp":
+                    webViewMessage = .exitApp("User closed workout window")
+                case "workoutOpened":
+                    webViewMessage = .workoutOpened(messageData)
+                case "workoutStarted":
+                    webViewMessage = .workoutStarted(messageData)
+                case "plan_unlocked":
+                    webViewMessage = .planUnlocked(messageData)
+                default:
+                    webViewMessage = .unknown("Unknown message type: \(type) with data: \(messageData)")
+                }
+                
+                DispatchQueue.main.async {
+                    self.onMessageReceived(webViewMessage)
+                }
+            }
+            
+            
+        }
+    
 }
 #endif
 
@@ -169,14 +171,14 @@ struct WebViewWrappermacOS: NSViewRepresentable {
     @Binding var isLoading: Bool
     var onMessageReceived: (WebViewMessage) -> Void
     
-    func makeNSView(context: Context) -> WKWebView {
+    func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
         webView.navigationDelegate = context.coordinator
         webView.load(URLRequest(url: url))
         return webView
     }
     
-    func updateNSView(_ nsView: WKWebView, context: Context) {
+    func updateUIView(_ uiView: WKWebView, context: Context) {
     }
     
     func makeCoordinator() -> Coordinator {
@@ -184,16 +186,17 @@ struct WebViewWrappermacOS: NSViewRepresentable {
     }
     
     class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
-        let parent: WebViewWrappermacOS
+        let parent: WebViewWrapperiOS
         var onMessageReceived: (WebViewMessage) -> Void
         
-        init(parent: WebViewWrappermacOS, onMessageReceived: @escaping (WebViewMessage) -> Void) {
+        init(parent: WebViewWrapperiOS, onMessageReceived: @escaping (WebViewMessage) -> Void) {
             self.parent = parent
             self.onMessageReceived = onMessageReceived
         }
         
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             parent.isLoading = false
+            
             let script = """
             window.postMessage({
                 'key': '\(parent.apiKey)',
@@ -214,50 +217,52 @@ struct WebViewWrappermacOS: NSViewRepresentable {
         }
         
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-               guard let messageBody = message.body as? String else { return }
-               handle(message: messageBody)
-           }
-           
-           func handle(message: String) {
-               guard let data = message.data(using: .utf8),
-                     let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                     let type = json["type"] as? String else {
-                   print("Could not parse JSON message from WebView.")
-                   return
-               }
-               
-               let messageData = json["data"] as? String ?? ""
-               
-               // Using the currentTime function as described, ensure it's defined or adjust as needed
-               
-               let webViewMessage: WebViewMessage
-               switch type {
-               case "kinestex_launched":
-                   webViewMessage = .kinestexLaunched(messageData)
-               case "finished_workout":
-                   webViewMessage = .finishedWorkout("\(messageData)")
-               case "error_occured":
-                   webViewMessage = .errorOccurred("\(messageData)")
-               case "exercise_completed":
-                   webViewMessage = .exerciseCompleted("\(messageData)")
-               case "exitApp":
-                   webViewMessage = .exitApp("User closed workout window")
-               case "workoutOpened":
-                   webViewMessage = .workoutOpened(messageData)
-               case "workoutStarted":
-                   webViewMessage = .workoutStarted(messageData)
-               case "plan_unlocked":
-                   webViewMessage = .planUnlocked(messageData)
-               default:
-                   webViewMessage = .unknown("Unknown message type: \(type) with data: \(messageData)")
-               }
-               
-               DispatchQueue.main.async {
-                   self.onMessageReceived(webViewMessage)
-               }
-           }
-           
-    }
+            if message.name == "listener", let messageBody = message.body as? String {
+                handle(message: messageBody)
+            }
+        }
+            
+            func handle(message: String) {
+                guard let data = message.data(using: .utf8),
+                      let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                      let type = json["type"] as? String else {
+                    print("Could not parse JSON message from WebView.")
+                    return
+                }
+                
+                let messageData = json["data"] as? String ?? ""
+                
+                // Using the currentTime function as described, ensure it's defined or adjust as needed
+                
+                let webViewMessage: WebViewMessage
+                switch type {
+                case "kinestex_launched":
+                    webViewMessage = .kinestexLaunched(messageData)
+                case "finished_workout":
+                    webViewMessage = .finishedWorkout(messageData)
+                case "error_occured":
+                    webViewMessage = .errorOccurred(messageData)
+                case "exercise_completed":
+                    webViewMessage = .exerciseCompleted(messageData)
+                case "exitApp":
+                    webViewMessage = .exitApp("User closed workout window")
+                case "workoutOpened":
+                    webViewMessage = .workoutOpened(messageData)
+                case "workoutStarted":
+                    webViewMessage = .workoutStarted(messageData)
+                case "plan_unlocked":
+                    webViewMessage = .planUnlocked(messageData)
+                default:
+                    webViewMessage = .unknown("Unknown message type: \(type) with data: \(messageData)")
+                }
+                
+                DispatchQueue.main.async {
+                    self.onMessageReceived(webViewMessage)
+                }
+            }
+            
+            
+        }
 }
 #endif
 
