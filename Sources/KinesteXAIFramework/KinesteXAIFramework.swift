@@ -19,13 +19,13 @@ public struct KinesteXAIFramework: View {
     let apiKey: String
     let companyName: String
     let userId: String
-    let planCategory: String
-    let workoutCategory: String
+    var planCategory: String = ""
+    var workoutCategory: String = ""
     @Binding var isLoading: Bool
     
     var onMessageReceived: (WebViewMessage) -> Void
 
-    public init(apiKey: String, companyName: String, userId: String, planCategory: String, workoutCategory: String, isLoading: Binding<Bool>, onMessageReceived: @escaping (WebViewMessage) -> Void) {
+    public init(apiKey: String, companyName: String, userId: String, planCategory: String = "", workoutCategory: String = "", isLoading: Binding<Bool>, onMessageReceived: @escaping (WebViewMessage) -> Void) {
         self.apiKey = apiKey
         self.companyName = companyName
         self.userId = userId
