@@ -22,6 +22,7 @@ public struct KinesteXAIFramework: View {
     let planCategory: String
     let workoutCategory: String
     @Binding var isLoading: Bool
+    
     var onMessageReceived: (WebViewMessage) -> Void
 
     public init(apiKey: String, companyName: String, userId: String, planCategory: String, workoutCategory: String, isLoading: Binding<Bool>, onMessageReceived: @escaping (WebViewMessage) -> Void) {
