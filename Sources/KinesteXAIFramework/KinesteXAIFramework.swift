@@ -149,26 +149,29 @@ struct WebViewWrapperiOS: UIViewRepresentable {
     @Binding var isLoading: Bool
     var onMessageReceived: (WebViewMessage) -> Void
     
-    func makeUIView(context: Context) -> WKWebView {
+    func makeUIView(context: Context) -> WKWebView  {
         let contentController = WKUserContentController()
         let preferences = WKPreferences()
-        // important! Please enable javascript
         preferences.javaScriptEnabled = true
 
         let config = WKWebViewConfiguration()
         config.userContentController = contentController
         config.preferences = preferences
         config.allowsInlineMediaPlayback = true
-
+        config.mediaTypesRequiringUserActionForPlayback = []
+        config.requiresUserActionForMediaPlayback = false
+       
+        
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
+        webView.uiDelegate = context.coordinator
         contentController.add(context.coordinator, name: "listener")
 
-         // specify the background color of the webview based on your KinesteX's theme
-         webView.backgroundColor = .black
-         webView.scrollView.backgroundColor = .black
-          
-         webView.load(URLRequest(url: url))
+      
+        webView.backgroundColor = .black
+        webView.scrollView.backgroundColor = .black
+        
+        webView.load(URLRequest(url: url))
         
         return webView
     }
@@ -181,7 +184,7 @@ struct WebViewWrapperiOS: UIViewRepresentable {
         Coordinator(parent: self, onMessageReceived: onMessageReceived)
     }
     
-    class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
+    class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler, WKUIDelegate {
         let parent: WebViewWrapperiOS
         var onMessageReceived: (WebViewMessage) -> Void
         
@@ -192,13 +195,13 @@ struct WebViewWrapperiOS: UIViewRepresentable {
         
   
         @available(iOS 15.0, *)
-          func webView(_ webView: WKWebView,
-              decideMediaCapturePermissionsFor origin: WKSecurityOrigin,
-              initiatedBy frame: WKFrameInfo,
-              type: WKMediaCaptureType) async -> WKPermissionDecision {
-                  return .grant;
-          }
-
+        func webView(_ webView: WKWebView,
+                     decideMediaCapturePermissionsFor origin: WKSecurityOrigin,
+                     initiatedBy frame: WKFrameInfo,
+                     type: WKMediaCaptureType) async -> WKPermissionDecision {
+            return .grant
+        }
+        
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             parent.isLoading = false
       
@@ -290,26 +293,30 @@ struct WebViewWrappermacOS: NSViewRepresentable {
     @Binding var isLoading: Bool
     var onMessageReceived: (WebViewMessage) -> Void
     
-    func makeUIView(context: Context) -> WKWebView {
+    func makeUIView(context: Context) -> WKWebView  {
         let contentController = WKUserContentController()
         let preferences = WKPreferences()
-        // important! Please enable javascript
         preferences.javaScriptEnabled = true
 
         let config = WKWebViewConfiguration()
         config.userContentController = contentController
         config.preferences = preferences
         config.allowsInlineMediaPlayback = true
-
+        config.mediaTypesRequiringUserActionForPlayback = []
+        config.requiresUserActionForMediaPlayback = false
+       
+        
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
+        webView.uiDelegate = context.coordinator
         contentController.add(context.coordinator, name: "listener")
 
-         // specify the background color of the webview based on your KinesteX's theme
-         webView.backgroundColor = .black
-         webView.scrollView.backgroundColor = .black
-          
-         webView.load(URLRequest(url: url))
+      
+        webView.backgroundColor = .black
+        webView.scrollView.backgroundColor = .black
+         
+
+        webView.load(URLRequest(url: url))
         
         return webView
     }
@@ -321,7 +328,7 @@ struct WebViewWrappermacOS: NSViewRepresentable {
         Coordinator(parent: self, onMessageReceived: onMessageReceived)
     }
     
-    class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
+    class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler, WKUIDelegate {
         let parent: WebViewWrapperiOS
         var onMessageReceived: (WebViewMessage) -> Void
         
@@ -332,14 +339,13 @@ struct WebViewWrappermacOS: NSViewRepresentable {
         
   
         @available(iOS 15.0, *)
-          func webView(_ webView: WKWebView,
-              decideMediaCapturePermissionsFor origin: WKSecurityOrigin,
-              initiatedBy frame: WKFrameInfo,
-              type: WKMediaCaptureType) async -> WKPermissionDecision {
-                  return .grant;
-          }
-
-
+        func webView(_ webView: WKWebView,
+                     decideMediaCapturePermissionsFor origin: WKSecurityOrigin,
+                     initiatedBy frame: WKFrameInfo,
+                     type: WKMediaCaptureType) async -> WKPermissionDecision {
+            return .grant
+        }
+        
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             parent.isLoading = false
       
