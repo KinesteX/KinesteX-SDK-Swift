@@ -29,19 +29,19 @@ public enum WorkoutCategory {
   
 }
 
-public struct KinesteXAIFrameworkFactory {
+public struct KinesteXAIFramework {
     private static var planCat = "Cardio"
     private static var workoutCat = ""
     
-    public static func createWebView(apiKey: String, companyName: String, userId: String, planCategory: PlanCategory, workoutCategory: WorkoutCategory, isLoading: Binding<Bool>, onMessageReceived: @escaping (WebViewMessage) -> Void) -> AnyView {
+    public static func createWebView(apiKey: String, companyName: String, userId: String, planCategory: PlanCategory = .Cardio, workoutCategory: WorkoutCategory = .Fitness, isLoading: Binding<Bool>, onMessageReceived: @escaping (WebViewMessage) -> Void) -> AnyView {
         let validationError = validateInput(apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCategory, workoutCategory: workoutCategory)
         
         if let error = validationError {
             // For framework internal use, you might want to log the error or handle it differently.
             print("⚠️ Validation Error: \(error)")
-            return AnyView(EmptyView()) // Return an empty view or any placeholder to indicate failure
+            return AnyView(EmptyView())// Return an empty view or any placeholder to indicate failure
         } else {
-            return AnyView(KinesteXAIFramework(apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCat, workoutCategory: workoutCat, isLoading: isLoading, onMessageReceived: onMessageReceived))
+            return AnyView(KinesteXAIView(apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCat, workoutCategory: workoutCat, isLoading: isLoading, onMessageReceived: onMessageReceived))
         }
     }
     
@@ -101,7 +101,7 @@ public struct KinesteXAIFrameworkFactory {
 
 
 // Define a single SwiftUI view for both iOS and macOS
-private struct KinesteXAIFramework: View {
+private struct KinesteXAIView: View {
     let apiKey: String
     let companyName: String
     let userId: String
@@ -176,6 +176,7 @@ struct WebViewWrapperiOS: UIViewRepresentable {
     func updateUIView(_ uiView: WKWebView, context: Context) {
     }
     
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(parent: self, onMessageReceived: onMessageReceived)
     }
@@ -190,6 +191,13 @@ struct WebViewWrapperiOS: UIViewRepresentable {
         }
         
   
+        @available(iOS 15.0, *)
+          func webView(_ webView: WKWebView,
+              decideMediaCapturePermissionsFor origin: WKSecurityOrigin,
+              initiatedBy frame: WKFrameInfo,
+              type: WKMediaCaptureType) async -> WKPermissionDecision {
+                  return .grant;
+          }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             parent.isLoading = false
@@ -323,6 +331,14 @@ struct WebViewWrappermacOS: NSViewRepresentable {
         }
         
   
+        @available(iOS 15.0, *)
+          func webView(_ webView: WKWebView,
+              decideMediaCapturePermissionsFor origin: WKSecurityOrigin,
+              initiatedBy frame: WKFrameInfo,
+              type: WKMediaCaptureType) async -> WKPermissionDecision {
+                  return .grant;
+          }
+
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             parent.isLoading = false
