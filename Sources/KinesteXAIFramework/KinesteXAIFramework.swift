@@ -107,8 +107,7 @@ private struct KinesteXAIView: View {
     let userId: String
     var planCategory: String
     var workoutCategory: String
-    private var planCat: String = "Cardio"
-    private var workoutCat: String = ""
+ 
     @Binding var isLoading: Bool
     
     var onMessageReceived: (WebViewMessage) -> Void
@@ -127,9 +126,9 @@ private struct KinesteXAIView: View {
     public var body: some View {
   
         #if os(iOS)
-        WebViewWrapperiOS(url: URL(string: "https://kineste-x-w.vercel.app")!, apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCat, workoutCategory: workoutCat, isLoading: $isLoading, onMessageReceived: onMessageReceived)
+        WebViewWrapperiOS(url: URL(string: "https://kineste-x-w.vercel.app")!, apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCategory, workoutCategory: workoutCategory, isLoading: $isLoading, onMessageReceived: onMessageReceived)
         #else
-        WebViewWrappermacOS(url: URL(string: "https://kineste-x-w.vercel.app")!, apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCat, workoutCategory: workoutCat, isLoading: $isLoading, onMessageReceived: onMessageReceived)
+        WebViewWrappermacOS(url: URL(string: "https://kineste-x-w.vercel.app")!, apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCategory, workoutCategory: workoutCategory, isLoading: $isLoading, onMessageReceived: onMessageReceived)
         #endif
     }
 }
