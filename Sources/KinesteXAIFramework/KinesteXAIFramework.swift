@@ -125,10 +125,12 @@ private struct KinesteXAIView: View {
 
     public var body: some View {
   
-        #if os(iOS)
-        WebViewWrapperiOS(url: URL(string: "https://kineste-x-w.vercel.app")!, apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCategory, workoutCategory: workoutCategory, isLoading: $isLoading, onMessageReceived: onMessageReceived)
-        #else
+     
+        #if os(macOS)
         WebViewWrappermacOS(url: URL(string: "https://kineste-x-w.vercel.app")!, apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCategory, workoutCategory: workoutCategory, isLoading: $isLoading, onMessageReceived: onMessageReceived)
+      
+        #else
+        WebViewWrapperiOS(url: URL(string: "https://kineste-x-w.vercel.app")!, apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCategory, workoutCategory: workoutCategory, isLoading: $isLoading, onMessageReceived: onMessageReceived)
         #endif
     }
 }
