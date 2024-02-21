@@ -14,18 +14,106 @@ public enum WebViewMessage {
     case unknown(String) // For handling any unrecognized messages
 }
 
+public enum PlanCategory {
+    case Cardio
+    case WeightManagement
+    case Strength
+    case Rehabilitation
+    case Custom(String)
+}
+
+public enum WorkoutCategory {
+    case Fitness
+    case Rehabilitation
+    case Custom(String)
+  
+}
+
+public struct KinesteXAIFrameworkFactory {
+    private static var planCat = "Cardio"
+    private static var workoutCat = ""
+    
+    public static func createWebView(apiKey: String, companyName: String, userId: String, planCategory: PlanCategory, workoutCategory: WorkoutCategory, isLoading: Binding<Bool>, onMessageReceived: @escaping (WebViewMessage) -> Void) -> AnyView {
+        let validationError = validateInput(apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCategory, workoutCategory: workoutCategory)
+        
+        if let error = validationError {
+            // For framework internal use, you might want to log the error or handle it differently.
+            print("⚠️ Validation Error: \(error)")
+            return AnyView(EmptyView()) // Return an empty view or any placeholder to indicate failure
+        } else {
+            return AnyView(KinesteXAIFramework(apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCat, workoutCategory: workoutCat, isLoading: isLoading, onMessageReceived: onMessageReceived))
+        }
+    }
+    
+    private static func validateInput(apiKey: String, companyName: String, userId: String, planCategory: PlanCategory, workoutCategory: WorkoutCategory) -> String? {
+        // Perform validation checks here
+        // Return nil if validation is successful, or an error message string if not
+        if containsDisallowedCharacters(apiKey) || containsDisallowedCharacters(companyName) || containsDisallowedCharacters(userId) {
+            return "apiKey, companyName, or userId contains disallowed characters: < >, { }, ( ), [ ], ;, \", ', $, ., #, or <script>"
+        }
+                switch planCategory {
+        
+                case .Cardio:
+                    self.planCat = "Cardio"
+                case .WeightManagement:
+                    self.planCat = "Weight Management"
+                case .Strength:
+                    self.planCat = "Strength"
+                case .Rehabilitation:
+                    self.planCat = "Rehabilitation"
+                case .Custom(let string):
+                    if string.isEmpty {
+                        return "planCategory cannot be empty"
+                    } else if containsDisallowedCharacters(string) {
+                        return "planCategory contains disallowed characters: < >, { }, ( ), [ ], ;, \", ', $, ., #, or <script>"
+                    }
+                    planCat = string
+        
+                }
+        
+                switch workoutCategory {
+        
+                case .Fitness:
+                    self.workoutCat = "Fitness"
+                case .Rehabilitation:
+                    self.workoutCat = "Rehabilitation"
+        
+                case .Custom(let string):
+                    if string.isEmpty {
+                        return "workoutCategory cannot be empty"
+                    } else if containsDisallowedCharacters(string) {
+                        return "workoutCategory contains disallowed characters: < >, { }, ( ), [ ], ;, \", ', $, ., #, or <script>"
+                    }
+                    workoutCat = string
+        
+                }
+        // Add more validation as needed
+        return nil
+    }
+    
+    private static func containsDisallowedCharacters(_ input: String) -> Bool {
+        let disallowedPattern = "<script>|</script>|[<>{}()\\[\\];\"'\\$\\.#]"
+        let regex = try! NSRegularExpression(pattern: disallowedPattern, options: [])
+        let matches = regex.matches(in: input, options: [], range: NSRange(location: 0, length: input.utf16.count))
+        return !matches.isEmpty
+    }
+}
+
+
 // Define a single SwiftUI view for both iOS and macOS
-public struct KinesteXAIFramework: View {
+private struct KinesteXAIFramework: View {
     let apiKey: String
     let companyName: String
     let userId: String
-    var planCategory: String = ""
-    var workoutCategory: String = ""
+    var planCategory: String
+    var workoutCategory: String
+    private var planCat: String = "Cardio"
+    private var workoutCat: String = ""
     @Binding var isLoading: Bool
     
     var onMessageReceived: (WebViewMessage) -> Void
 
-    public init(apiKey: String, companyName: String, userId: String, planCategory: String = "", workoutCategory: String = "", isLoading: Binding<Bool>, onMessageReceived: @escaping (WebViewMessage) -> Void) {
+    public init(apiKey: String, companyName: String, userId: String, planCategory: String, workoutCategory: String, isLoading: Binding<Bool>, onMessageReceived: @escaping (WebViewMessage) -> Void) {
         self.apiKey = apiKey
         self.companyName = companyName
         self.userId = userId
@@ -35,11 +123,13 @@ public struct KinesteXAIFramework: View {
         self.onMessageReceived = onMessageReceived
     }
     
+
     public var body: some View {
+  
         #if os(iOS)
-        WebViewWrapperiOS(url: URL(string: "https://kineste-x-w.vercel.app")!, apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCategory, workoutCategory: workoutCategory,isLoading: $isLoading, onMessageReceived: onMessageReceived)
+        WebViewWrapperiOS(url: URL(string: "https://kineste-x-w.vercel.app")!, apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCat, workoutCategory: workoutCat, isLoading: $isLoading, onMessageReceived: onMessageReceived)
         #else
-        WebViewWrappermacOS(url: URL(string: "https://kineste-x-w.vercel.app")!, apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCategory, workoutCategory: workoutCategory, isLoading: $isLoading, onMessageReceived: onMessageReceived)
+        WebViewWrappermacOS(url: URL(string: "https://kineste-x-w.vercel.app")!, apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCat, workoutCategory: workoutCat, isLoading: $isLoading, onMessageReceived: onMessageReceived)
         #endif
     }
 }
@@ -99,8 +189,11 @@ struct WebViewWrapperiOS: UIViewRepresentable {
             self.onMessageReceived = onMessageReceived
         }
         
+  
+
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             parent.isLoading = false
+      
             
             let script = """
             window.postMessage({
@@ -189,7 +282,6 @@ struct WebViewWrappermacOS: NSViewRepresentable {
     @Binding var isLoading: Bool
     var onMessageReceived: (WebViewMessage) -> Void
     
-    
     func makeUIView(context: Context) -> WKWebView {
         let contentController = WKUserContentController()
         let preferences = WKPreferences()
@@ -230,8 +322,11 @@ struct WebViewWrappermacOS: NSViewRepresentable {
             self.onMessageReceived = onMessageReceived
         }
         
+  
+
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             parent.isLoading = false
+      
             
             let script = """
             window.postMessage({
@@ -253,6 +348,7 @@ struct WebViewWrappermacOS: NSViewRepresentable {
         }
         
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+            print("Received message: \(message.body)")
             if message.name == "listener", let messageBody = message.body as? String {
                 handle(message: messageBody)
             }
