@@ -304,6 +304,8 @@ struct WebViewWrapperiOS: UIViewRepresentable {
                     webViewMessage = .exerciseCompleted(messageData)
                 case "exitApp":
                     webViewMessage = .exitApp("User closed workout window")
+                case "exit_kinestex":
+                    webViewMessage = .exitApp("User closed workout window")
                 case "workoutOpened":
                     webViewMessage = .workoutOpened(messageData)
                 case "workoutStarted":
@@ -442,6 +444,8 @@ struct WebViewWrapperiOSChallenge: UIViewRepresentable {
                 case "exercise_completed":
                     webViewMessage = .exerciseCompleted(messageData)
                 case "exitApp":
+                    webViewMessage = .exitApp("User closed workout window")
+                case "exit_kinestex":
                     webViewMessage = .exitApp("User closed workout window")
                 case "workoutOpened":
                     webViewMessage = .workoutOpened(messageData)
@@ -587,6 +591,8 @@ struct WebViewWrappermacOS: NSViewRepresentable {
                     webViewMessage = .exerciseCompleted(messageData)
                 case "exitApp":
                     webViewMessage = .exitApp("User closed workout window")
+                case "exit_kinestex":
+                    webViewMessage = .exitApp("User closed workout window")
                 case "workoutOpened":
                     webViewMessage = .workoutOpened(messageData)
                 case "workoutStarted":
@@ -722,6 +728,8 @@ struct WebViewWrappermacOSChallenge: NSViewRepresentable {
                 case "exercise_completed":
                     webViewMessage = .exerciseCompleted(messageData)
                 case "exitApp":
+                    webViewMessage = .exitApp("User closed workout window")
+                case "exit_kinestex":
                     webViewMessage = .exitApp("User closed workout window")
                 case "workoutOpened":
                     webViewMessage = .workoutOpened(messageData)
