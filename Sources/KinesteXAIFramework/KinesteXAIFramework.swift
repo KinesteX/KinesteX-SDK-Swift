@@ -93,9 +93,7 @@ public struct KinesteXAIFramework {
                     self.workoutCat = "Rehabilitation"
         
                 case .Custom(let string):
-                    if string.isEmpty {
-                        return "workoutCategory cannot be empty"
-                    } else if containsDisallowedCharacters(string) {
+                   if containsDisallowedCharacters(string) {
                         return "workoutCategory contains disallowed characters: < >, { }, ( ), [ ], ;, \", ', $, ., #, or <script>"
                     }
                     workoutCat = string
