@@ -11,7 +11,7 @@ public enum WebViewMessage {
     case workoutOpened(String)
     case workoutStarted(String)
     case planUnlocked(String)
-    case unknown(String)
+    case unknown(String) // For handling any unrecognized messages
 }
 
 public enum PlanCategory {
@@ -175,10 +175,10 @@ private struct KinesteXAIViewChallenge: View {
   
      
         #if os(macOS)
-        WebViewWrappermacOSChallenge(url: URL(string: "https://kinestex-challenges.vercel.app/")!, apiKey: apiKey, companyName: companyName, userId: userId, exercise: exercise, countdown: countdown, isLoading: $isLoading, onMessageReceived: onMessageReceived)
+        WebViewWrappermacOSChallenge(url: URL(string: "https://kineste-x-w.vercel.app")!, apiKey: apiKey, companyName: companyName, userId: userId, exercise: exercise, countdown: countdown, isLoading: $isLoading, onMessageReceived: onMessageReceived)
       
         #else
-        WebViewWrapperiOSChallenge(url: URL(string: "https://kinestex-challenges.vercel.app/")!, apiKey: apiKey, companyName: companyName, userId: userId, exercice: exercise, countdown: countdown, isLoading: $isLoading, onMessageReceived: onMessageReceived)
+        WebViewWrapperiOSChallenge(url: URL(string: "https://kineste-x-w.vercel.app")!, apiKey: apiKey, companyName: companyName, userId: userId, exercice: exercise, countdown: countdown, isLoading: $isLoading, onMessageReceived: onMessageReceived)
         #endif
     }
 }
