@@ -271,6 +271,12 @@ struct WebViewWrapperiOS: UIViewRepresentable {
             }
         }
         
+        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+                  
+            parent.isLoading = true // WebView init started
+       
+        }
+
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
             print("Received message: \(message.body)")
             if message.name == "listener", let messageBody = message.body as? String {
@@ -381,6 +387,12 @@ struct WebViewWrapperiOSChallenge: UIViewRepresentable {
         }
         
   
+        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+                  
+            parent.isLoading = true // WebView init started
+       
+        }
+        
         @available(iOS 15.0, *)
         func webView(_ webView: WKWebView,
                      decideMediaCapturePermissionsFor origin: WKSecurityOrigin,
@@ -534,6 +546,11 @@ struct WebViewWrappermacOS: NSViewRepresentable {
                      type: WKMediaCaptureType) async -> WKPermissionDecision {
             return .grant
         }
+        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+                  
+            parent.isLoading = true // WebView init started
+       
+        }
         
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             parent.isLoading = false
@@ -671,6 +688,12 @@ struct WebViewWrappermacOSChallenge: NSViewRepresentable {
                      initiatedBy frame: WKFrameInfo,
                      type: WKMediaCaptureType) async -> WKPermissionDecision {
             return .grant
+        }
+        
+        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+                  
+            parent.isLoading = true // WebView init started
+       
         }
         
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
