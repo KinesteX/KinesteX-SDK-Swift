@@ -52,11 +52,11 @@ https://github.com/KinesteX/KinesteX-Swift-Framework.git
     - miniOS version - 13.0
       
 2. **Launching the view**:
-   - To display KinesteX, call `createWebView` in KinesteXAIFramework:
+   - To display KinesteX, call `createPlanView` in KinesteXAIFramework:
 
    ```Swift
     // isLoading is a State variable that can be used to display a loading screen before the webview loads
-    KinesteXAIFramework.createWebView(apiKey: "your key", companyName: "your company", userId: "your userId", planCategory: .Cardio, workoutCategory: .Fitness, isLoading: $isLoading, onMessageReceived: { message in
+    KinesteXAIFramework.createPlanView(apiKey: "your key", companyName: "your company", userId: "your userId", planCategory: .Cardio, workoutCategory: .Fitness, isLoading: $isLoading, onMessageReceived: { message in
                         // our callback function to let you know of any real-time changes and user activity
                         switch message {
                             
