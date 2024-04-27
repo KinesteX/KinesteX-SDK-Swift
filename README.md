@@ -20,9 +20,9 @@ Add the following keys for camera usage:
 ### Add the framework as a package dependency:
 
 ```xml
-https://github.com/V-m1r/KinesteXAIWebView.git
+https://github.com/KinesteX/KinesteX-Swift-Framework.git
 ```
-<img width="1305" alt="Screenshot 2024-02-24 at 10 28 52 AM" src="https://github.com/V-m1r/KinesteXAIWebView/assets/62508191/1cad2100-1beb-4386-8e55-ba3d8f37edc5">
+<img width="1449" alt="Screenshot 2024-04-25 at 5 39 51 PM" src="https://github.com/KinesteX/KinesteX-SDK-Swift/assets/62508191/adc4164e-3361-436a-9e66-6f6939fce71b">
 
 ### Available categories to sort workout plans: 
 
