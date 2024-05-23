@@ -43,7 +43,7 @@ https://github.com/KinesteX/KinesteX-Swift-Framework.git
 | **Rehabilitation** |
 | **Custom(String) - in case we release new custom workouts for your usage** | 
 
-## Usage
+## USAGE WORKOUT PLANS
 
 ### Initial Setup
 
@@ -121,6 +121,62 @@ https://github.com/KinesteX/KinesteX-Swift-Framework.git
     unknown(String) - For handling any unrecognized messages
 
 ```
+## USAGE CHALLENGE
+      
+ **Launching the view**:
+   - To display KinesteX Challenge, call `createChallengeView` in KinesteXAIFramework:
+
+   ```Swift
+    // isLoading is a State variable that can be used to display a loading screen before the webview loads
+    KinesteXAIFramework.createChallengeView(apiKey: "your key", companyName: "your company", userId: "your userId", exercise: String = "Squats", countdown: Int, isLoading: $isLoading, onMessageReceived: { message in
+                        // our callback function to let you know of any real-time changes and user activity
+                        switch message {
+                            
+                        case .kinestexLaunched(let data):
+                            print("KinesteX Launched: \(data)")
+                        case .finishedWorkout(let data):
+                            print("Workout Finished: \(data)")
+                            // Handle other cases as needed
+                        case .exitApp(let data):
+                             // user wants to close KinesteX view, so dismiss the view
+                            dismiss()
+                        default:
+                            break
+                        }
+                        
+                    })
+
+                       // OPTIONAL: Display loading screen
+                      .overlay(
+                        
+                        Group {
+                            if showAnimation {
+                                 Text("Aifying challenges...").foregroundColor(.black).font(.caption)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity) // Fullscreen
+                                    .background(Color.white) // White background
+                                     .scaleEffect(showAnimation ? 1 : 3) // Scale up
+                                    .opacity(showAnimation ? 1 : 0) // Fade out
+                                    .animation(.easeInOut(duration: 1.5), value: showAnimation)
+                                
+                            }
+                        }
+                        
+                        
+                    )
+                    // Smoothly hide the animation
+                   .onChange(of: isLoading) { newValue in
+                        if !newValue {
+                            withAnimation(.easeInOut(duration: 2.5)) { // Extended duration to 2.5 seconds
+                                showAnimation = false
+                            }
+                            
+                        } else {
+                            showAnimation = true
+                        }
+                    }
+   
+   ```
+
 
 All available data types: 
  
