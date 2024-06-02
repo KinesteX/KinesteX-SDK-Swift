@@ -35,14 +35,6 @@ https://github.com/KinesteX/KinesteX-Swift-Framework.git
 | **Custom(String) - in case we release new custom plans for your usage** | 
 
 
-### Available categories to sort workouts (displayed right below the plans): 
-
-| **enum WorkoutCategory** | 
-| --- | 
-| **Fitness** |
-| **Rehabilitation** |
-| **Custom(String) - in case we release new custom workouts for your usage** | 
-
 ## USAGE WORKOUT PLANS
 
 ### Initial Setup
