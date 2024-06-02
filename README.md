@@ -16,7 +16,6 @@ https://github.com/V-m1r/KinesteX-B2B-AI-Fitness-and-Physio/assets/62508191/ac48
 | **Custom User Experience**   | Integrate the camera component with motion tracking. Real-time feedback on all customer movements. Control the position, size, and placement of the camera component. | - Real-time feedback on customer movements <br> - Communication of every repeat and mistake <br> - Customizable camera component position, size, and placement     | [View Details](https://www.figma.com/proto/JyPHuRKKbiQkwgiDTkGJgT/Camera-Component?page-id=0%3A1&node-id=1-4&viewport=925%2C409%2C0.22&t=3UccMcp1o3lKc0cP-1&scaling=contain) |
 
 ---
-
 ## Configuration
 
 #### Info.plist
@@ -35,7 +34,8 @@ Add the following keys for camera usage:
 ```xml
 https://github.com/KinesteX/KinesteX-SDK-Swift.git
 ```
-<img width="1449" alt="Screenshot 2024-04-25 at 5 39 51 PM" src="https://github.com/KinesteX/KinesteX-SDK-Swift/assets/62508191/adc4164e-3361-436a-9e66-6f6939fce71b">
+<img width="1451" alt="Screenshot 2024-06-03 at 12 06 46 AM" src="https://github.com/KinesteX/KinesteX-SDK-Swift/assets/62508191/e1c311c2-cd67-4009-bcac-18db7acf0979">
+
 
 ### Available categories to sort workout plans:
 
@@ -297,6 +297,7 @@ public struct KinesteXAIFramework {
 ```
 
 ## Example Usage
+View Demo Project here: https://github.com/KinesteX/KinesteX-Swift-Demo
 
 Here's a comprehensive example of how to integrate and use the KinesteX AI Fitness SDK in a SwiftUI app:
 
