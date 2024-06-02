@@ -5,7 +5,7 @@
 
 https://github.com/V-m1r/KinesteX-B2B-AI-Fitness-and-Physio/assets/62508191/ac4817ca-9257-402d-81db-74e95060b153
 
-## Choose Your Integration Option
+## Available Integration Option
 ---
 
 ### Integration Options
