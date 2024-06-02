@@ -391,7 +391,7 @@ struct WebViewWrapper: UIViewRepresentable {
         webView.navigationDelegate = context.coordinator
         webView.uiDelegate = context.coordinator
         contentController.add(context.coordinator, name: "listener")
-
+        webView.allowsLinkPreview = false
         webView.allowsBackForwardNavigationGestures = true
         webView.backgroundColor = .black
         webView.scrollView.backgroundColor = .black
