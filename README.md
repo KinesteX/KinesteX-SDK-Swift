@@ -56,20 +56,20 @@ https://github.com/KinesteX/KinesteX-SDK-Swift.git
     - miniOS version - 13.0
       
 2. **Launching the view**:
-   - To display KinesteX, call `createPlanView` in KinesteXAIFramework:
+   - To display KinesteX Complete User Experience, call `createMainView` in KinesteXAIFramework:
 
    ```Swift
     // isLoading is a State variable that can be used to display a loading screen before the webview loads
-    KinesteXAIFramework.createPlanView(apiKey: "your key", companyName: "your company", userId: "your userId", planCategory: .Cardio, workoutCategory: .Fitness, isLoading: $isLoading, onMessageReceived: { message in
+    KinesteXAIFramework.createMainView(apiKey: "your key", companyName: "your company", userId: "your userId", planCategory: .Cardio, isLoading: $isLoading, onMessageReceived: { message in
                         // our callback function to let you know of any real-time changes and user activity
                         switch message {
                             
-                        case .kinestexLaunched(let data):
+                        case .kinestex_launched(let data):
                             print("KinesteX Launched: \(data)")
-                        case .finishedWorkout(let data):
+                        case .finished_workout(let data):
                             print("Workout Finished: \(data)")
                             // Handle other cases as needed
-                        case .exitApp(let data):
+                        case .exit_kinestex(let data):
                              // user wants to close KinesteX view, so dismiss the view
                             dismiss()
                         default:
@@ -143,12 +143,12 @@ https://github.com/KinesteX/KinesteX-SDK-Swift.git
                         // our callback function to let you know of any real-time changes and user activity
                         switch message {
                             
-                        case .kinestexLaunched(let data):
+                        case .kinestex_launched(let data):
                             print("KinesteX Launched: \(data)")
-                        case .finishedWorkout(let data):
+                        case .finished_workout(let data):
                             print("Workout Finished: \(data)")
                             // Handle other cases as needed
-                        case .exitApp(let data):
+                        case .exit_kinestex(let data):
                              // user wants to close KinesteX view, so dismiss the view
                             dismiss()
                         default:
