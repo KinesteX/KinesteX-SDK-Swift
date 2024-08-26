@@ -1,26 +1,27 @@
 # [KinesteX AI Fitness SDK](https://kinestex.com)
 
-## INTEGRATE AI TRAINER IN YOUR APP IN MINUTES
-### Easily transform your platform with our SDK: white-labeled workouts with precise motion tracking and real-time feedback tailored for accuracy and engagement.
+## INTEGRATE AN AI TRAINER INTO YOUR APP IN MINUTES
+### Effortlessly enhance your platform with our SDK, providing white-labeled workouts with precise motion tracking and real-time feedback designed for maximum accuracy and engagement.
 
-https://github.com/V-m1r/KinesteX-B2B-AI-Fitness-and-Physio/assets/62508191/ac4817ca-9257-402d-81db-74e95060b153
+[Demo Video](https://github.com/V-m1r/KinesteX-B2B-AI-Fitness-and-Physio/assets/62508191/ac4817ca-9257-402d-81db-74e95060b153)
 
-## Available Integration Option
+## Integration Options
 ---
 
-### Integration Options
+### Integration Overview
 
-| **Integration Option**     | **Description**                                                                                       | **Features**                                                                                                                                                      | **Details**                                                                                                             |
-|----------------------------|-------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|
-| **Complete User Experience** | Leave it to us to recommend the best workout routines for your customers, handle motion tracking, and overall user interface. High level of customization based on your brand book for a seamless experience. | - Long-term lifestyle workout plans <br> - Specific body parts and full-body workouts <br> - Individual exercise challenges (e.g., 20 squat challenge)              | [View Integration Options](https://www.figma.com/proto/XYEoV023iSFdhpw3w65zR1/Complete?page-id=0%3A1&node-id=0-1&viewport=793%2C330%2C0.1&t=d7VfZzKpLBsJAcP9-1&scaling=contain) |
-| **Custom User Experience**   | Integrate the camera component with motion tracking. Real-time feedback on all customer movements. Control the position, size, and placement of the camera component. | - Real-time feedback on customer movements <br> - Communication of every repeat and mistake <br> - Customizable camera component position, size, and placement     | [View Details](https://www.figma.com/proto/JyPHuRKKbiQkwgiDTkGJgT/Camera-Component?page-id=0%3A1&node-id=1-4&viewport=925%2C409%2C0.22&t=3UccMcp1o3lKc0cP-1&scaling=contain) |
+| **Option**                   | **Description**                                                                                      | **Features**                                                                                                                                                  | **Details**                                                                                                                |
+|------------------------------|------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
+| **Complete User Experience** | Let us handle the workout recommendations, motion tracking, and overall user interface. Customizable to fit your brand for a seamless experience. | - Long-term lifestyle workout plans<br> - Specific body parts and full-body workouts<br> - Individual exercise challenges (e.g., 20 squat challenge)         | [Explore Complete Experience](https://www.figma.com/proto/XYEoV023iSFdhpw3w65zR1/Complete?page-id=0%3A1&node-id=0-1&viewport=793%2C330%2C0.1&t=d7VfZzKpLBsJAcP9-1&scaling=contain) |
+| **Custom User Experience**   | Integrate motion tracking with customizable camera settings. Real-time feedback for all user movements. | - Real-time movement feedback<br> - Instant communication of repetitions and mistakes<br> - Customizable camera position, size, and placement               | [Explore Custom Experience](https://www.figma.com/proto/JyPHuRKKbiQkwgiDTkGJgT/Camera-Component?page-id=0%3A1&node-id=1-4&viewport=925%2C409%2C0.22&t=3UccMcp1o3lKc0cP-1&scaling=contain) |
 
 ---
+
 ## Configuration
 
-#### Info.plist
+### Info.plist Setup
 
-Add the following keys for camera usage:
+Add the following keys to enable camera and microphone usage:
 
 ```xml
 <key>NSCameraUsageDescription</key>
@@ -29,15 +30,19 @@ Add the following keys for camera usage:
 <string>Microphone access is required for video streaming.</string>
 ```
 
-### Add the framework as a package dependency:
+### Adding the SDK as a Package Dependency
+
+Add the framework as a package dependency with the following URL:
 
 ```xml
 https://github.com/KinesteX/KinesteX-SDK-Swift.git
 ```
-<img width="1451" alt="Screenshot 2024-06-03 at 12 06 46 AM" src="https://github.com/KinesteX/KinesteX-SDK-Swift/assets/62508191/e1c311c2-cd67-4009-bcac-18db7acf0979">
 
+## Integration - Main View
 
-### Available categories to sort workout plans:
+Create the main view with personalized AI workout plans, tracking the user's progress and guiding them through their workout schedule.
+
+### Available Workout Plan Categories
 
 | **enum PlanCategory** | 
 | --- | 
@@ -45,151 +50,172 @@ https://github.com/KinesteX/KinesteX-SDK-Swift.git
 | **Cardio** |
 | **Rehabilitation** | 
 | **Weight Management** | 
-| **Custom(String) - in case we release new custom plans for your usage** | 
-
-## USAGE WORKOUT PLANS
+| **Custom(String)** - For newly released custom plans |
 
 ### Initial Setup
 
 1. **Prerequisites**:
-    - Ensure you've added the necessary permissions in `Info.plist`.
-    - miniOS version - 13.0
-      
-2. **Launching the view**:
-   - To display KinesteX Complete User Experience, call `createMainView` in KinesteXAIFramework:
+    - Ensure the necessary permissions are added in `Info.plist`.
+    - Minimum OS version: 13.0
 
-   ```Swift
-    // isLoading is a State variable that can be used to display a loading screen before the webview loads
-    KinesteXAIFramework.createMainView(apiKey: "your key", companyName: "your company", userId: "your userId", planCategory: .Cardio, isLoading: $isLoading, onMessageReceived: { message in
-                        // our callback function to let you know of any real-time changes and user activity
-                        switch message {
-                            
-                        case .kinestex_launched(let data):
-                            print("KinesteX Launched: \(data)")
-                        case .finished_workout(let data):
-                            print("Workout Finished: \(data)")
-                            // Handle other cases as needed
-                        case .exit_kinestex(let data):
-                             // user wants to close KinesteX view, so dismiss the view
-                            dismiss()
-                        default:
-                            break
-                        }
-                        
-                    })
+2. **Launching the Main View**:
+   - To display the KinesteX Complete User Experience, call `createMainView` from the `KinesteXAIFramework`:
 
-                       // OPTIONAL: Display loading screen
-                      .overlay(
-                        
-                        Group {
-                            if showAnimation {
-                                 Text("Aifying workouts...").foregroundColor(.black).font(.caption)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity) // Fullscreen
-                                    .background(Color.white) // White background
-                                     .scaleEffect(showAnimation ? 1 : 3) // Scale up
-                                    .opacity(showAnimation ? 1 : 0) // Fade out
-                                    .animation(.easeInOut(duration: 1.5), value: showAnimation)
-                                
-                            }
-                        }
-                        
-                        
-                    )
-                    // Smoothly hide the animation
-                   .onChange(of: isLoading) { newValue in
-                        if !newValue {
-                            withAnimation(.easeInOut(duration: 2.5)) { // Extended duration to 2.5 seconds
-                                showAnimation = false
-                            }
-                            
-                        } else {
-                            showAnimation = true
-                        }
-                    }
-   
+   ```swift
+    KinesteXAIFramework.createMainView(
+        apiKey: apiKey,
+        companyName: company,
+        userId: "YOUR USER ID",
+        planCategory: planCategory,
+        user: nil,
+        isLoading: $isLoading,
+        onMessageReceived: { message in
+            // Handle real-time updates and user activity
+            switch message {
+            case .kinestex_launched(let data):
+                print("KinesteX Launched: \(data)")
+            case .finished_workout(let data):
+                print("Workout Finished: \(data)")
+                // Additional cases as needed
+            case .exit_kinestex(let data):
+                dismiss() // Dismiss the view
+            default:
+                break
+            }
+        }
+    )
+    // OPTIONAL: Display loading screen during view initialization
+    .overlay(
+        Group {
+            if showAnimation {
+                Text("Aifying workouts...")
+                    .foregroundColor(.black)
+                    .font(.caption)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.white)
+                    .scaleEffect(showAnimation ? 1 : 3)
+                    .opacity(showAnimation ? 1 : 0)
+                    .animation(.easeInOut(duration: 1.5), value: showAnimation)
+            }
+        }
+    )
+    .onChange(of: isLoading) { newValue in
+        withAnimation(.easeInOut(duration: 2.5)) {
+            showAnimation = !newValue
+        }
+    }
    ```
 
-3. **Handling the data**:
-   `onMessageReceived` is a callback function that passes `enum WebViewMessage`
-   Available options are:
+## Integration - Challenge View
+
+### Launching the Challenge View
+
+Recommended exercises for challenges include:
 
 ```swift
-    kinestex_launched([String: Any]) - Logs when the KinesteX View is successfully launched.
-    finished_workout([String: Any]) - Logs when a workout is finished.
-    error_occurred([String: Any]) - Logs when an error has occurred, example (user did not grant access to the camera)
-    exercise_completed([String: Any]) - Logs when an exercise is completed.
-    exit_kinestex([String: Any]) - Logs when user clicks on exit button and wishes to close the KinesteX view.
-    workout_opened([String: Any]) - Logs when the workout description view is opened.
-    workout_started([String: Any]) - Logs when a workout is started.
-    plan_unlocked([String: Any]) - Logs when a plan is unlocked.
-    custom_type([String: Any]) - For handling any unrecognized messages
-    reps([String: Any]) - Logs when a successful repeat is performed.
-    mistake([String: Any]) - Logs when a mistake is detected.
-    left_camera_frame([String: Any]) - Logs when the user leaves the camera frame.
-    returned_camera_frame([String: Any]) - Logs when the user returns to the camera frame.
-    workout_overview([String: Any]) - Logs a summary when a workout is completed.
-    exercise_overview([String: Any]) - Logs a summary of exercises completed.
-    workout_completed([String: Any]) - Logs when a workout is finished and the user exits the overview.
+"Squats", "Jumping Jack", "Burpee", "Push Ups", "Lunges", 
+"Reverse Lunges", "Knee Push Ups", "Hip Thrust", "Squat Thrusts",
+"Basic Crunch", "Sprinters Sit Ups", "Low Jacks", "Twisted Mountain Climber"
 ```
 
-## USAGE CHALLENGE
-      
- **Launching the view**:
-   - To display KinesteX Challenge, call `createChallengeView` in KinesteXAIFramework:
+To display the KinesteX Challenge View, use `createChallengeView`:
 
-   ```Swift
-    // isLoading is a State variable that can be used to display a loading screen before the webview loads
-    KinesteXAIFramework.createChallengeView(apiKey: "your key", companyName: "your company", userId: "your userId", exercise: String = "Squats", countdown: Int, isLoading: $isLoading, onMessageReceived: { message in
-                        // our callback function to let you know of any real-time changes and user activity
-                        switch message {
-                            
-                        case .kinestex_launched(let data):
-                            print("KinesteX Launched: \(data)")
-                        case .finished_workout(let data):
-                            print("Workout Finished: \(data)")
-                            // Handle other cases as needed
-                        case .exit_kinestex(let data):
-                             // user wants to close KinesteX view, so dismiss the view
-                            dismiss()
-                        default:
-                            break
-                        }
-                        
-                    })
+```swift
+KinesteXAIFramework.createChallengeView(
+    apiKey: "your key",
+    companyName: "your company",
+    userId: "your userId",
+    exercise: challengeExercise,
+    countdown: Int,
+    isLoading: $isLoading,
+    onMessageReceived: { message in
+        switch message {
+        case .exit_kinestex(let data):
+            dismiss()
+        default:
+            break
+        }
+    }
+)
+```
 
-                       // OPTIONAL: Display loading screen
-                      .overlay(
-                        
-                        Group {
-                            if showAnimation {
-                                 Text("Aifying challenges...").foregroundColor(.black).font(.caption)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity) // Fullscreen
-                                    .background(Color.white) // White background
-                                     .scaleEffect(showAnimation ? 1 : 3) // Scale up
-                                    .opacity(showAnimation ? 1 : 0) // Fade out
-                                    .animation(.easeInOut(duration: 1.5), value: showAnimation)
-                                
-                            }
-                        }
-                        
-                        
-                    )
-                    // Smoothly hide the animation
-                   .onChange(of: isLoading) { newValue in
-                        if !newValue {
-                            withAnimation(.easeInOut(duration: 2.5)) { // Extended duration to 2.5 seconds
-                                showAnimation = false
-                            }
-                            
-                        } else {
-                            showAnimation = true
-                        }
-                    }
-   
-   ```
+## Integration - Workout View
 
-## API Reference
+### Launching the Workout View
 
+To display the KinesteX Workout View, use `createWorkoutView`:
+
+```swift
+KinesteXAIFramework.createWorkoutView(
+    apiKey: apiKey,
+    companyName: company,
+    userId: "YOUR USER ID",
+    workoutName: selectedWorkout,
+    user: nil,
+    isLoading: $isLoading,
+    onMessageReceived: { message in
+        switch message {
+        case .exit_kinestex(_):
+            showKinesteX = false
+        default:
+            break
+        }
+    }
+)
+```
+
+## Integration - Plan View
+
+### Launching the Plan View
+
+To display the KinesteX Plan View, use `createPlanView`:
+
+```swift
+KinesteXAIFramework.createPlanView(
+    apiKey: apiKey,
+    companyName: company,
+    userId: "YOUR USER ID",
+    planName: selectedPlan,
+    user: nil,
+    isLoading: $isLoading,
+    onMessageReceived: { message in
+        switch message {
+        case .exit_kinestex(_):
+            showKinesteX = false
+        default:
+            break
+        }
+    }
+)
+```
+
+## Integration - Camera Component
+
+### Launching the Camera Component
+
+To display the pose analysis view with an embedded camera component, use `createCameraComponent`:
+
+```swift
+KinesteXAIFramework.createCameraComponent(
+    apiKey: apiKey,
+    companyName: company,
+    userId: "YOUR USER ID",
+    exercises: arrayAllExercises,
+    currentExercise: currentExerciseString,
+    user: nil,
+    isLoading: $isLoading,
+    onMessageReceived: { message in
+        switch message {
+        case .reps(let value):
+            reps = value["value"] as? Int ?? 0
+        case .mistake(let value):
+            mistake = value["value"] as? String ?? "--"
+        default:
+            break
+        }
+    }
+)
+```
 ### Public Functions
 
 ```swift
@@ -297,7 +323,6 @@ public struct KinesteXAIFramework {
 ```
 
 ## Example Usage
-View Demo Project here: https://github.com/KinesteX/KinesteX-Swift-Demo
 
 Here's a comprehensive example of how to integrate and use the KinesteX AI Fitness SDK in a SwiftUI app:
 
@@ -315,8 +340,25 @@ struct ContentView: View {
     let company = ""
     @State var selectedWorkout = "Fitness Lite"
     @State var selectedChallenge = "Squats"
+    
+//    let recommendedChallenges = [
+//        "Squats",
+//        "Jumping Jack",
+//        "Burpee",
+//        "Push Ups",
+//        "Lunges",
+//        "Reverse Lunges",
+//        "Knee Push Ups",
+//        "Hip Thrust",
+//        "Squat Thrusts",
+//        "Basic Crunch",
+//        "Sprinters Sit Ups",
+//        "Low Jacks",
+//        "Twisted Mountain Climber"
+//    ]
+
     @State var selectedPlan = "Full Cardio"
-    @State var selectedOption = "Complete"
+    @State var selectedOption = "Complete UX"
     @State var planCategory: PlanCategory = .Cardio
     // for camera component
     @State var reps = 0
@@ -324,6 +366,7 @@ struct ContentView: View {
 
     @ViewBuilder
     var mainContent: some View {
+   
         DisclosureGroup("Select Integration Option", isExpanded: $isExpanded) {
             content
         }
@@ -333,14 +376,16 @@ struct ContentView: View {
         .foregroundColor(.white)
         .font(.headline)
         .padding(.horizontal)
+        
     }
-
     @ViewBuilder
     var workoutPlanCustomization: some View {
+   
         DisclosureGroup("Select Plan", isExpanded: $isExpandedInner) {
             VStack {
                 RadioButton(title: "Full Cardio", isSelected: selectedPlan == "Full Cardio", action: {
                     selectedPlan = "Full Cardio"
+ 
                 })
                 RadioButton(title: "Elastic Evolution", isSelected: selectedPlan == "Elastic Evolution", action: {
                     selectedPlan = "Elastic Evolution"
@@ -360,14 +405,17 @@ struct ContentView: View {
         .foregroundColor(.white)
         .font(.headline)
         .padding(.horizontal)
+        
     }
-
+    
     @ViewBuilder
     var mainCustomization: some View {
+   
         DisclosureGroup("Select Goal Category", isExpanded: $isExpandedInner) {
             VStack {
                 RadioButton(title: "Cardio", isSelected: planCategory == .Cardio, action: {
                     planCategory = .Cardio
+ 
                 })
                 RadioButton(title: "Strength", isSelected: planCategory == .Strength, action: {
                     planCategory = .Strength
@@ -386,14 +434,17 @@ struct ContentView: View {
         .foregroundColor(.white)
         .font(.headline)
         .padding(.horizontal)
+        
     }
-
+    
     @ViewBuilder
     var workoutCustomization: some View {
+   
         DisclosureGroup("Select Workout", isExpanded: $isExpandedInner) {
             VStack {
                 RadioButton(title: "Fitness Lite", isSelected: selectedWorkout == "Fitness Lite", action: {
                     selectedWorkout = "Fitness Lite"
+ 
                 })
                 RadioButton(title: "Circuit Training", isSelected: selectedWorkout == "Circuit Training", action: {
                     selectedWorkout = "Circuit Training"
@@ -401,6 +452,7 @@ struct ContentView: View {
                 RadioButton(title: "Tabata", isSelected: selectedWorkout == "Tabata", action: {
                    selectedWorkout = "Tabata"
                 })
+                
             }
         }
         .accentColor(.white)
@@ -409,18 +461,22 @@ struct ContentView: View {
         .foregroundColor(.white)
         .font(.headline)
         .padding(.horizontal)
+        
     }
-
+    
     @ViewBuilder
     var challengeCustomization: some View {
+   
         DisclosureGroup("Select Challenge", isExpanded: $isExpandedInner) {
             VStack {
                 RadioButton(title: "Squats", isSelected: selectedChallenge == "Squats", action: {
                     selectedChallenge = "Squats"
+ 
                 })
                 RadioButton(title: "Jumping Jack", isSelected: selectedChallenge == "Jumping Jack", action: {
                     selectedChallenge = "Jumping Jack"
                 })
+           
             }
         }
         .accentColor(.white)
@@ -429,10 +485,12 @@ struct ContentView: View {
         .foregroundColor(.white)
         .font(.headline)
         .padding(.horizontal)
+        
     }
-
+    
     @ViewBuilder
     var content: some View {
+   
         VStack {
             RadioButton(title: "Complete UX", isSelected: selectedOption == "Complete UX", action: {
                 selectedOption = "Complete UX"
@@ -450,58 +508,72 @@ struct ContentView: View {
                 selectedOption = "Camera"
             })
         }
+        
     }
-
+    
     @ViewBuilder
     var kinestexView: some View {
+   
         if selectedOption == "Complete UX" {
-            KinesteXAIFramework.createMainView(apiKey:
-
- apiKey, companyName: company, userId: "user1", planCategory: planCategory, user: nil, isLoading: $isLoading, onMessageReceived: { message in
-                switch message {
-                case .exit_kinestex(_):
-                    showKinesteX = false
-                default:
-                    break
-                }
+            KinesteXAIFramework.createMainView(apiKey: apiKey, companyName: company, userId: "YOUR USER ID", planCategory: planCategory, user: nil, isLoading: $isLoading, onMessageReceived: {
+                    message in
+                    switch message {
+                    case .exit_kinestex(_):
+                       showKinesteX = false
+                        break
+                   // handle all other cases accordingly
+                    default:
+                        break
+                    }
             })
         } else if selectedOption == "Plan" {
-            KinesteXAIFramework.createPlanView(apiKey: apiKey, companyName: company, userId: "user1", planName: selectedPlan, user: nil, isLoading: $isLoading, onMessageReceived: { message in
-                switch message {
-                case .exit_kinestex(_):
-                    showKinesteX = false
-                default:
-                    break
-                }
+            KinesteXAIFramework.createPlanView(apiKey: apiKey, companyName: company, userId: "YOUR USER ID", planName: selectedPlan, user: nil, isLoading: $isLoading, onMessageReceived: {
+                    message in
+                    switch message {
+                    case .exit_kinestex(_):
+                       showKinesteX = false
+                        break
+                   // handle all other cases accordingly
+                    default:
+                        break
+                    }
             })
         } else if selectedOption == "Workout" {
-            KinesteXAIFramework.createWorkoutView(apiKey: apiKey, companyName: company, userId: "user1", workoutName: selectedWorkout, user: nil, isLoading: $isLoading, onMessageReceived: { message in
-                switch message {
-                case .exit_kinestex(_):
-                    showKinesteX = false
-                default:
-                    break
-                }
+            KinesteXAIFramework.createWorkoutView(apiKey: apiKey, companyName: company, userId: "YOUR USER ID", workoutName: selectedWorkout, user: nil, isLoading: $isLoading, onMessageReceived: {
+                    message in
+                    switch message {
+                    case .exit_kinestex(_):
+                       showKinesteX = false
+                        break
+                   // handle all other cases accordingly
+                    default:
+                        break
+                    }
             })
         } else if selectedOption == "Challenge" {
-            KinesteXAIFramework.createChallengeView(apiKey: apiKey, companyName: company, userId: "user1", exercise: selectedChallenge, countdown: 100, user: nil, isLoading: $isLoading, onMessageReceived: { message in
-                switch message {
-                case .exit_kinestex(_):
-                    showKinesteX = false
-                default:
-                    break
-                }
+            KinesteXAIFramework.createChallengeView(apiKey: apiKey, companyName: company, userId: "YOUR USER ID", exercise: selectedChallenge, countdown: 100, user: nil, isLoading: $isLoading, onMessageReceived: {
+                    message in
+                    switch message {
+                    case .exit_kinestex(_):
+                       showKinesteX = false
+                        break
+                   // handle all other cases accordingly
+                    default:
+                        break
+                    }
             })
         } else {
             ZStack {
-                KinesteXAIFramework.createCameraComponent(apiKey: apiKey, companyName: company, userId: "user1", exercises: ["Squats"], currentExercise: "Squats", user: nil, isLoading: $isLoading, onMessageReceived: { message in
+                KinesteXAIFramework.createCameraComponent(apiKey: apiKey, companyName: company, userId: "YOUR USER ID", exercises: ["Squats"], currentExercise: "Squats",                        user: nil, isLoading: $isLoading, onMessageReceived: {
+                    message in
                     switch message {
-                    case .exit_kinestex(_):
-                        showKinesteX = false
                     case .reps(let value):
                         reps = value["value"] as? Int ?? 0
+                        break
                     case .mistake(let value):
                         mistake = value["value"] as? String ?? "--"
+                        break
+                        // handle all other cases accordingly
                     default:
                         break
                     }
@@ -510,48 +582,80 @@ struct ContentView: View {
                     Text("REPS: \(reps)")
                     Text("MISTAKE: \(mistake)").foregroundColor(.red)
                     Spacer()
+                   
                 }
             }
         }
+        
     }
-
     var body: some View {
-        if showKinesteX {
-            kinestexView.frame(maxWidth: .infinity, maxHeight: .infinity) // Fullscreen
-        } else {
-            VStack {
-                Spacer()
-                mainContent
-                if selectedOption == "Complete UX" {
-                    mainCustomization
-                } else if selectedOption == "Plan" {
-                    workoutPlanCustomization
-                } else if selectedOption == "Workout" {
-                    workoutCustomization
-                } else if selectedOption == "Challenge" {
-                    challengeCustomization
-                }
-                Spacer()
-                Button(action: {
-                    showKinesteX = true
-                }, label: {
-                    Text("View \(selectedOption)").font(.title3).foregroundColor(.white).bold().padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.green.cornerRadius(10))
-                        .padding(.horizontal)
-                        .padding(.bottom)
-                }).padding(.bottom, 30)
-            }.ignoresSafeArea().background(.black)
-        }
+  
+            if showKinesteX {
+              kinestexView.frame(maxWidth: .infinity, maxHeight: .infinity) // Fullscreen
+                   
+            } else {
+                VStack{
+                    Spacer()
+                
+                    mainContent
+                    if selectedOption == "Complete UX" {
+                        mainCustomization
+                    } else if selectedOption == "Plan" {
+                        workoutPlanCustomization
+                    } else if selectedOption == "Workout" {
+                        workoutCustomization
+                    } else if selectedOption == "Challenge" {
+                        challengeCustomization
+                    } else {
+                        
+                    }
+                    Spacer()
+                    
+                    Button(action: {
+                        showKinesteX = true
+                       
+                    }, label: {
+                        Text("View \(selectedOption)").font(.title3).foregroundColor(.white).bold().padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.green.cornerRadius(10))
+                            .padding(.horizontal)
+                            .padding(.bottom)
+                        
+                    }).padding(.bottom, 30)
+                    
+                }.ignoresSafeArea().background(.black)
+            }
+            
+            
+        
+       
     }
 }
 
-#Preview {
-    ContentView()
-}
 ```
 ---
+## **Handling Data**:
 
+`onMessageReceived` is a callback function that passes `enum WebViewMessage`. Available message types include:
+
+```swift
+    kinestex_launched([String: Any]) - Logs when KinesteX View is launched.
+    finished_workout([String: Any]) - Logs when a workout is completed.
+    error_occurred([String: Any]) - Logs errors, such as missing camera permissions.
+    exercise_completed([String: Any]) - Logs when an exercise is finished.
+    exit_kinestex([String: Any]) - Logs when the user exits the KinesteX view.
+    workout_opened([String: Any]) - Logs when a workout description is viewed.
+    workout_started([String: Any]) - Logs when a workout begins.
+    plan_unlocked([String: Any]) - Logs when a workout plan is unlocked.
+    custom_type([String: Any]) - Handles unrecognized messages.
+    reps([String: Any]) - Logs successful repetitions.
+    mistake([String: Any]) - Logs detected mistakes.
+    left_camera_frame([String: Any]) - Logs when the user leaves the camera frame.
+    returned_camera_frame([String: Any]) - Logs when the user returns to the camera frame.
+    workout_overview([String: Any]) - Logs a workout summary upon completion.
+    exercise_overview([String: Any]) - Logs a summary of completed exercises.
+    workout_completed([String: Any]) - Logs when a workout is completed and the overview is exited.
+```
 
 ## Available data types
  
