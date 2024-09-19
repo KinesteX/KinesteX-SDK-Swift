@@ -26,8 +26,6 @@ Add the following keys to enable camera and microphone usage:
 ```xml
 <key>NSCameraUsageDescription</key>
 <string>Camera access is required for video streaming.</string>
-<key>NSMicrophoneUsageDescription</key>
-<string>Microphone access is required for video streaming.</string>
 ```
 
 ### Adding the SDK as a Package Dependency
