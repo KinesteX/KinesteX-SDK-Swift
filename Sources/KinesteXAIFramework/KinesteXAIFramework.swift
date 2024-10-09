@@ -1,6 +1,7 @@
 import SwiftUI
 import WebKit
 import Combine
+import AVKit
 
 class WebViewState: ObservableObject {
     @Published var webView: WKWebView?
@@ -73,6 +74,54 @@ public enum PlanCategory: Equatable {
 
 public struct KinesteXAIFramework {
 
+    
+    private static let defaultVideoURL = "https://cdn.kinestex.com/SDK%2Fhow-to-video%2Foutput_compressed.mp4?alt=media&token=9a3c0ed8-c86b-4553-86dd-a96f23e55f74"
+      
+      /**
+       Creates a view that plays the 'how to' video.
+       
+       - Parameters:
+         - videoURL: An optional custom video URL to be played (default is provided).
+         - onVideoEnd: A closure called when the video playback ends.
+       
+       - Returns: A SwiftUI `AnyView` containing the video player.
+       */
+    public static func createHowToView(
+        videoURL: String? = nil,  // Optional URL, default to the predefined URL
+        onVideoEnd: @escaping () -> Void
+    ) -> AnyView {
+        let url = URL(string: videoURL ?? defaultVideoURL)!
+        let player = AVPlayer(url: url)
+        
+        // Store the observer so we can remove it later
+        var observer: NSObjectProtocol?
+        
+        let playerView = VideoPlayer(player: player)
+            .onAppear {
+                player.play()
+                
+                // Add observer for video end
+                observer = NotificationCenter.default.addObserver(
+                    forName: .AVPlayerItemDidPlayToEndTime,
+                    object: player.currentItem,
+                    queue: .main
+                ) { _ in
+                    onVideoEnd()
+                }
+            }
+            .onDisappear {
+                player.pause()
+                
+                // Remove observer safely when the view disappears
+                if let observer = observer {
+                    NotificationCenter.default.removeObserver(observer)
+                }
+            }
+        
+        return AnyView(playerView)
+    }
+
+    
     private static var cameraWebView: GenericWebView?
 
     /**
