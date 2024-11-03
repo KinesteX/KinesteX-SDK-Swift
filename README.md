@@ -186,6 +186,31 @@ KinesteXAIFramework.createPlanView(
 )
 ```
 
+## Integration - Experience View
+
+### Launching the Experience View
+
+To display the KinesteX Experience View, use `createExperienceView`:
+
+```swift
+KinesteXAIFramework.createWorkoutView(
+    apiKey: apiKey,
+    companyName: company,
+    userId: "YOUR USER ID",
+    experience: "Box",
+    user: nil,
+    isLoading: $isLoading,
+    onMessageReceived: { message in
+        switch message {
+        case .exit_kinestex(_):
+            showKinesteX = false
+        default:
+            break
+        }
+    }
+)
+```
+
 ## Integration - Camera Component
 
 ### Launching the Camera Component
