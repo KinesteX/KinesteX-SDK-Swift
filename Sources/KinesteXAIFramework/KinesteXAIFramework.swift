@@ -450,26 +450,36 @@ public struct KinesteXAIFramework {
         return !matches.isEmpty
     }
     
-    /// Fetches content data from the API based on the provided parameters such as `apiKey`, `companyName`, `contentType`, `id`, `title`, and `lang`.
+    /// Fetches content data from the API based on the provided parameters such as `apiKey`, `companyName`, `contentType`, and various filtering options like `id`, `title`, `category`, and `bodyParts`.
+    ///
     /// This function retrieves data for specific content types (workouts, plans, or exercises) and returns the parsed result using a completion handler.
+    ///
     /// - Parameters:
     ///   - apiKey: The API key for authentication to access the content.
     ///   - companyName: The name of the company making the request.
-    ///   - contentType: The type of content to fetch (e.g., workout, plan, or exercise).
-    ///   - id: An optional unique identifier for the content; if provided, it overrides the `title` parameter.
+    ///   - contentType: The type of content to fetch (`.workout`, `.plan`, or `.exercise`).
+    ///   - id: An optional unique identifier for the content; if provided, it overrides other search parameters.
     ///   - title: An optional title used to search for the content when `id` is not provided.
+    ///   - category: An optional category to filter workouts and plans.
+    ///   - bodyParts: An optional array of `BodyPart` to filter workouts, plans, and exercises.
     ///   - lang: The language for the content; defaults to English ("en").
+    ///   - lastDocId: An optional document ID for pagination; fetches content after this ID.
+    ///   - limit: An optional limit on the number of items to fetch.
     ///   - completion: A closure that returns the result of the API request. It can return a success result with the requested content or an error message if any issues occur.
     ///
     /// - Returns: Void. The function performs the request asynchronously and delivers the result via the `completion` closure.
     ///
     /// - Important:
-    ///     - Ensures `apiKey`, `companyName`, and `lang` do not contain disallowed characters before making the request.
-    ///     - If `id` or `title` contains disallowed characters, the request will terminate with a validation error.
+    ///     - Ensures `apiKey`, `companyName`, `lang`, `category`, and `bodyParts` do not contain disallowed characters before making the request.
+    ///     - If `id`, `title`, `category`, or any of the `bodyParts` contains disallowed characters, the request will terminate with a validation error.
     ///
     /// - Example Usage:
-    ///     ```
-    ///     fetchAPIContentData(apiKey: "yourApiKey", companyName: "MyCompany", contentType: .workout, id: "12345") { result in
+    ///     ```swift
+    ///     // Fetch a workout by ID
+    ///     fetchAPIContentData(apiKey: "yourApiKey",
+    ///                         companyName: "MyCompany",
+    ///                         contentType: .workout,
+    ///                         id: "12345") { result in
     ///         switch result {
     ///         case .workout(let workout):
     ///             // Handle workout data
@@ -477,12 +487,42 @@ public struct KinesteXAIFramework {
     ///             print("Error: \(message)")
     ///         }
     ///     }
+    ///
+    ///     // Fetch exercises targeting specific body parts
+    ///     fetchAPIContentData(apiKey: "yourApiKey",
+    ///                         companyName: "MyCompany",
+    ///                         contentType: .exercise,
+    ///                         bodyParts: [.abs, .biceps],
+    ///                         limit: 10) { result in
+    ///         switch result {
+    ///         case .exercises(let exercisesResponse):
+    ///             let exercises = exercisesResponse.exercises
+    ///             // Handle exercises data
+    ///         case .error(let message):
+    ///             print("Error: \(message)")
+    ///         }
+    ///     }
+    ///
+    ///     // Fetch workouts in a specific category
+    ///     fetchAPIContentData(apiKey: "yourApiKey",
+    ///                         companyName: "MyCompany",
+    ///                         contentType: .workout,
+    ///                         category: "Cardio",
+    ///                         limit: 5) { result in
+    ///         switch result {
+    ///         case .workouts(let workoutsResponse):
+    ///             let workouts = workoutsResponse.workouts
+    ///             // Handle workouts data
+    ///         case .error(let message):
+    ///             print("Error: \(message)")
+    ///         }
+    ///     }
     ///     ```
     ///
     /// - Throws: An error if there is a network issue or if the data cannot be parsed correctly.
-
     public static func fetchAPIContentData(apiKey: String, companyName: String, contentType: ContentType,
-                                           id: String? = nil, title: String? = nil, lang: String = "en",
+                                           id: String? = nil, title: String? = nil, lang: String = "en", category: String? = nil,
+                                           lastDocId: String? = nil, limit: Int? = nil, bodyParts: [BodyPart]? = nil,
                                            completion: @escaping (APIContentResult) -> Void) async {
        
         if containsDisallowedCharacters(apiKey) || containsDisallowedCharacters(companyName) || containsDisallowedCharacters(lang) {
@@ -497,6 +537,19 @@ public struct KinesteXAIFramework {
                 completion(.error("⚠️ Error: Title contains disallowed characters"))
             }
         }
+        if (category != nil) {
+            if (containsDisallowedCharacters(category!)) {
+                completion(.error("⚠️ Error: Category contains disallowed characters"))
+            }
+        }
+        
+        if (lastDocId != nil) {
+            if (containsDisallowedCharacters(lastDocId!)){
+                completion(.error("⚠️ Error: LastDocID contains disallowed characters"))
+            }
+        }
+
+        
         let baseAPIURL = "https://admin.kinestex.com/api/v1/"
         
         // Determine endpoint
@@ -506,25 +559,32 @@ public struct KinesteXAIFramework {
         case .plan: endpoint = "plans"
         case .exercise: endpoint = "exercises"
         }
-        
-        // Construct URL
-        guard var components = URLComponents(string: baseAPIURL + endpoint + ((id != nil) ? "/\(id!)" : "")) else {
-            completion(.error("Check your ID or title. It might contain invalid characters."))
-            return
+ 
+        guard var components = URLComponents(string: baseAPIURL + endpoint + ((id != nil) ? "/\(id!)" : (title != nil) ? "/\(title!)" : "")) else {
+                completion(.error("Failed to construct URL. Invalid ID or title"))
+                return
         }
         
         // Set query parameters
         var queryItems: [URLQueryItem] = []
-        if let title = title {
-            queryItems.append(URLQueryItem(name: "title", value: title))
-        }
+
         queryItems.append(URLQueryItem(name: "lang", value: lang))
+        if let category { queryItems.append(URLQueryItem(name: "category", value: category)) }
+        if let lastDocId { queryItems.append(URLQueryItem(name: "lastDocId", value: lastDocId)) }
+        if let bodyParts {
+            let bodyPartsStrings = bodyParts.map { $0.rawValue }
+            let bodyPartsJoined = bodyPartsStrings.joined(separator: ",")
+            queryItems.append(URLQueryItem(name: "body_parts", value: bodyPartsJoined))
+        }
+        if let limit { queryItems.append(URLQueryItem(name: "limit", value: String(limit))) }
         components.queryItems = queryItems
         
         guard let url = components.url else {
             completion(.error("Failed to send request. Invalid ID, title, or language setting."))
             return
         }
+        
+        print("complete url: \(url.absoluteString)")
         // Create request
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -541,17 +601,33 @@ public struct KinesteXAIFramework {
             
             if (200...299).contains(httpResponse.statusCode) {
                 do {
-                    switch contentType {
-                    case .workout:
-                        let workout = try DataProcessor.processWorkoutData(data)
-                        completion(.workout(workout))
-                    case .plan:
-                        let plan = try DataProcessor.processPlanData(data)
-                        completion(.plan(plan))
-                    case .exercise:
-                        let exercise = try DataProcessor.processExerciseData(data)
-                        completion(.exercise(exercise))
-                    }
+                    if category != nil || bodyParts != nil {
+                        
+                                switch contentType {
+                                      case .workout:
+                                          let workouts = try DataProcessor.processWorkoutsArray(data)
+                                          completion(.workouts(workouts))
+                                      case .plan:
+                                          let plans = try DataProcessor.processPlansArray(data)
+                                          completion(.plans(plans))
+                                      case .exercise:
+                                          let exercises = try DataProcessor.processExercisesArray(data)
+                                          completion(.exercises(exercises))
+                                      }
+                                  } else {
+                                      // Handle single item responses as before
+                                      switch contentType {
+                                      case .workout:
+                                          let workout = try DataProcessor.processWorkoutData(data)
+                                          completion(.workout(workout))
+                                      case .plan:
+                                          let plan = try DataProcessor.processPlanData(data)
+                                          completion(.plan(plan))
+                                      case .exercise:
+                                          let exercise = try DataProcessor.processExerciseData(data)
+                                          completion(.exercise(exercise))
+                                }
+                   }
                 } catch {
                     completion(.error("Failed to parse data: \(error.localizedDescription). Please contact us at support@kinestex.com if this issue persists"))
                 }
@@ -785,12 +861,15 @@ struct WebViewWrapper: UIViewRepresentable {
 // MARK: - Network Request Function
 
 /// APIContentResult is an enum that represents the result of an API request.
-/// It returns either a specific content model (workout, plan, or exercise) or an error message if the request fails.
+/// It returns either a specific content model(s) (workout, plan, or exercise) or an error message if the request fails.
 public enum APIContentResult {
-    case workout(WorkoutModel)
-    case plan(PlanModel)
-    case exercise(ExerciseModel)
-    case error(String)
+       case workouts(WorkoutsResponse)
+       case workout(WorkoutModel)
+       case plans(PlansResponse)
+       case plan(PlanModel)
+       case exercises(ExerciseResponse)
+       case exercise(ExerciseModel)
+       case error(String)
 }
 
 // Models for API responses
@@ -857,6 +936,21 @@ public struct PlanLevel: Codable {
     public let days: [String: PlanDay]
 }
 
+public struct WorkoutsResponse: Codable {
+    public let workouts: [WorkoutModel]
+    public let lastDocId: String
+}
+public struct ExerciseResponse: Codable {
+    public let exercises: [ExerciseModel]
+    public let lastDocId: String
+}
+
+public struct PlansResponse: Codable {
+    public let plans: [PlanModel]
+    public let lastDocId: String
+}
+
+
 /// PlanDay represents a day within a plan level, with a title, description, and an optional array of workouts for that day.
 public struct PlanDay: Codable {
     public let title: String
@@ -866,7 +960,6 @@ public struct PlanDay: Codable {
 
 /// WorkoutSummary provides basic information about a workout within a plan day, containing its title and ID.
 public struct WorkoutSummary: Codable {
-    public let title: String
     public let id: String
 }
 
@@ -875,9 +968,30 @@ public enum ContentType: String, CaseIterable, Identifiable {
     case workout = "Workout"
     case plan = "Plan"
     case exercise = "Exercise"
+    public var id: String { self.rawValue }
+}
+/// ContentType is an enum for the types of content that can be fetched, with each case representing a different content type (workout, plan, exercise).
+public enum BodyPart: String, CaseIterable, Identifiable {
+    case abs = "Abs"
+    case biceps = "Biceps"
+    case calves = "Calves"
+    case chest = "Chest"
+    case external_oblique = "External Oblique"
+    case forearms = "Forearms"
+    case glutes = "Glutes"
+    case neck = "Neck"
+    case quads = "Quads"
+    case shoulders = "Shoulders"
+    case triceps = "Triceps"
+    case hamstrings = "Hamstrings"
+    case lats = "Lats"
+    case lower_back = "Lower Back"
+    case traps = "Traps"
+    case full_body = "Full Body"
     
     public var id: String { self.rawValue }
 }
+
 
 /// APIResponse represents a generic API response structure, containing optional fields for message or error details.
 struct APIResponse: Codable {
@@ -886,6 +1000,96 @@ struct APIResponse: Codable {
 }
 
 
+
+// Filter processing to DataProcessor
+extension DataProcessor {
+    static func processWorkoutsArray(_ data: Data) throws -> WorkoutsResponse {
+        if let jsonString = String(data: data, encoding: .utf8) {
+            print("Raw Workout JSON: \(jsonString)")
+           }
+           
+           do {
+               let decoder = JSONDecoder()
+               let workoutsResponse = try decoder.decode(WorkoutsResponseRaw.self, from: data)
+               
+               // Map RawWorkoutData to WorkoutModel
+               let workoutModels = workoutsResponse.workouts.map { rawWorkout in
+                   return WorkoutModel(
+                       id: rawWorkout.id,
+                       title: rawWorkout.title,
+                       img_URL: rawWorkout.workout_desc_img,
+                       category: rawWorkout.category,
+                       description: rawWorkout.description,
+                       total_minutes: rawWorkout.total_minutes,
+                       total_calories: rawWorkout.calories,
+                       body_parts: rawWorkout.body_parts,
+                       dif_level: rawWorkout.dif_level,
+                       sequence: processSequence(rawWorkout.sequence)
+                   )
+               }
+               
+               let workoutResp = WorkoutsResponse(workouts: workoutModels, lastDocId: workoutsResponse.lastDocId)
+               return workoutResp
+           } catch let error as DecodingError {
+               // Handle decoding errors
+               print("Decoding Error in processWorkoutData: \(error)")
+               throw error
+           } catch {
+               // Handle other errors
+               print("Unexpected error in processWorkoutData: \(error)")
+               throw error
+        }
+    }
+    
+    static func processExercisesArray(_ data: Data) throws -> ExerciseResponse {
+        if let jsonString = String(data: data, encoding: .utf8) {
+            print("Raw Exercises Array JSON: \(jsonString)")
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            let items = try decoder.decode(ExerciseResponseRaw.self, from: data)
+            let exercises = items.exercises.map { item in
+                ExerciseModel(
+                    id: item.id ?? "NA",
+                    title: item.title,
+                    thumbnail_URL: item.thumbnail_URL ?? "",
+                    video_URL: item.video_URL ?? "",
+                    workout_countdown: item.workout_countdown,
+                    workout_reps: item.workout_repeats,
+                    avg_reps: item.repeats,
+                    avg_countdown: item.countdown,
+                    rest_duration: 10,
+                    avg_cal: item.calories,
+                    body_parts: item.body_parts ?? [],
+                    description: item.description ?? "Missing exercise description",
+                    dif_level: item.dif_level ?? "Medium",
+                    common_mistakes: item.common_mistakes ?? "",
+                    steps: processSteps(item.steps),
+                    tips: item.tips ?? ""
+                )
+            }
+            return ExerciseResponse(exercises: exercises, lastDocId: items.lastDocId)
+        } catch {
+            print("Error processing exercises array: \(error)")
+            throw error
+        }
+    }
+    
+    static func processPlansArray(_ data: Data) throws -> PlansResponse {
+        if let jsonString = String(data: data, encoding: .utf8) {
+            print("Raw Plans Array JSON: \(jsonString)")
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            return try decoder.decode(PlansResponse.self, from: data)
+        } catch {
+            print("Error processing plans array: \(error)")
+            throw error
+        }
+    }
+}
 
 // Processing JSON from API:
 struct DataProcessor {
@@ -1093,3 +1297,12 @@ private struct RawSequenceItem: Codable {
 }
 
 
+private struct WorkoutsResponseRaw: Codable {
+     let workouts: [RawWorkoutData]
+     let lastDocId: String
+}
+
+private struct ExerciseResponseRaw: Codable {
+    let exercises: [RawSequenceItem]
+     let lastDocId: String
+}
