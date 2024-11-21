@@ -961,6 +961,10 @@ public struct PlanDay: Codable {
 /// WorkoutSummary provides basic information about a workout within a plan day, containing its title and ID.
 public struct WorkoutSummary: Codable {
     public let id: String
+    public let imgURL: String
+    public let title: String
+    public let calories: Double?
+    public let total_minutes: Int
 }
 
 /// ContentType is an enum for the types of content that can be fetched, with each case representing a different content type (workout, plan, exercise).
