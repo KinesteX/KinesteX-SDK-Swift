@@ -400,7 +400,7 @@ public struct KinesteXAIFramework {
                 }
             }
             if cameraWebView == nil {
-                let cameraWebViewInstance = GenericWebView(apiKey: apiKey, companyName: companyName, userId: userId, url: URL(string: "https://kinestex-camera-ai.vercel.app")!, data: data, isLoading: isLoading, onMessageReceived: onMessageReceived)
+                let cameraWebViewInstance = GenericWebView(apiKey: apiKey, companyName: companyName, userId: userId, url: URL(string: "https://kinestex.vercel.app/camera")!, data: data, isLoading: isLoading, onMessageReceived: onMessageReceived)
                 self.cameraWebView = cameraWebViewInstance
             }
             return AnyView(cameraWebView!)
