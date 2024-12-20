@@ -46,6 +46,14 @@ public struct UserDetails {
     var weight: Int
     var gender: Gender
     var lifestyle: Lifestyle
+    
+    public init(age: Int, height: Int, weight: Int, gender: Gender, lifestyle: Lifestyle) {
+        self.age = age
+        self.height = height
+        self.weight = weight
+        self.gender = gender
+        self.lifestyle = lifestyle
+    }
 }
 
 public enum PlanCategory: Equatable {
