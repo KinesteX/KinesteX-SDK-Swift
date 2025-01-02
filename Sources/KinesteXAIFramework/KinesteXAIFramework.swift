@@ -312,14 +312,15 @@ public struct KinesteXAIFramework {
            - onMessageReceived: A closure that handles messages received from the WebView.
          - Returns: A SwiftUI `AnyView` containing the challenge view.
     */
-    public static func createChallengeView(apiKey: String, companyName: String, userId: String, exercise: String = "Squats", countdown: Int, user: UserDetails?, isLoading: Binding<Bool>, customParams: [String: Any] = [:], onMessageReceived: @escaping (WebViewMessage) -> Void) -> AnyView {
+    public static func createChallengeView(apiKey: String, companyName: String, userId: String, exercise: String = "Squats", countdown: Int, user: UserDetails?, showLeaderboard: Bool = true, isLoading: Binding<Bool>, customParams: [String: Any] = [:], onMessageReceived: @escaping (WebViewMessage) -> Void) -> AnyView {
         if containsDisallowedCharacters(apiKey) || containsDisallowedCharacters(companyName) || containsDisallowedCharacters(userId) || containsDisallowedCharacters(exercise) {
             print("⚠️ Validation Error: apiKey, companyName, userId, or exercise contains disallowed characters")
             return AnyView(EmptyView())
         } else {
             var data: [String: Any] = [
                 "exercise": exercise,
-                "countdown": countdown
+                "countdown": countdown,
+                "showLeaderboard": showLeaderboard
             ]
             if let user = user {
                 data["age"] = user.age
@@ -338,6 +339,33 @@ public struct KinesteXAIFramework {
                 }
             }
             return AnyView(GenericWebView(apiKey: apiKey, companyName: companyName, userId: userId, url: URL(string: "https://kinestex.vercel.app/challenge")!, data: data, isLoading: isLoading, onMessageReceived: onMessageReceived))
+        }
+    }
+    
+    public static func createLeaderboardView(apiKey: String, companyName: String, userId: String, exercise: String = "Squats", username: String = "", isLoading: Binding<Bool>, customParams: [String: Any] = [:], onMessageReceived: @escaping (WebViewMessage) -> Void) -> AnyView {
+        if containsDisallowedCharacters(apiKey) || containsDisallowedCharacters(companyName) || containsDisallowedCharacters(userId) || containsDisallowedCharacters(exercise) || containsDisallowedCharacters(username) {
+            print("⚠️ Validation Error: apiKey, companyName, userId, exercise, or username contains disallowed characters")
+            return AnyView(EmptyView())
+        } else {
+            var data: [String: Any] = [
+                "exercise": exercise,
+            ]
+     
+            let adjustedUsername = username.replacingOccurrences(of: " ", with: "%20")
+            var url = URL(string: "https://kinestex.vercel.app/leaderboard")!
+            if !adjustedUsername.isEmpty {
+                url = URL(string: "https://kinestex.vercel.app/leaderboard?username=\(adjustedUsername)")!
+            }
+            // Add custom parameters if they are valid
+            for (key, value) in customParams {
+                if containsDisallowedCharacters(key) || (value as? String).map(containsDisallowedCharacters) == true {
+                    print("⚠️ Validation Error: Custom parameter key or value contains disallowed characters")
+                    return AnyView(EmptyView())
+                } else {
+                    data[key] = value
+                }
+            }
+            return AnyView(GenericWebView(apiKey: apiKey, companyName: companyName, userId: userId, url: url, data: data, isLoading: isLoading, onMessageReceived: onMessageReceived))
         }
     }
 
