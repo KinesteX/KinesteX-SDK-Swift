@@ -692,6 +692,7 @@ private struct GenericWebView: View {
     @Binding var isLoading: Bool
     var onMessageReceived: (WebViewMessage) -> Void
     @ObservedObject var webViewState = WebViewState()
+    @State var hasFinishedInitialLoad = false
 
     public init(apiKey: String, companyName: String, userId: String, url: URL, data: [String: Any]?, isLoading: Binding<Bool>, onMessageReceived: @escaping (WebViewMessage) -> Void) {
         self.apiKey = apiKey
@@ -704,14 +705,25 @@ private struct GenericWebView: View {
     }
 
     public var body: some View {
-        WebViewWrapper(url: url, apiKey: apiKey, companyName: companyName, userId: userId, data: data, isLoading: $isLoading, onMessageReceived: onMessageReceived, webViewState: webViewState)
-            .onAppear {
-                if webViewState.webView == nil {
-                    let webView = WKWebView()
-                    self.webViewState.webView = webView
-                }
-            }
-    }
+        ZStack {
+                 WebViewWrapper(
+                     url: url,
+                     apiKey: apiKey,
+                     companyName: companyName,
+                     userId: userId,
+                     data: data,
+                     isLoading: $isLoading,
+                     hasFinishedLoading: $hasFinishedInitialLoad,
+                     onMessageReceived: onMessageReceived,
+                     webViewState: webViewState
+                 )
+                 
+                 if !hasFinishedInitialLoad {
+                     Color.black
+                 }
+             }
+             .background(Color.black)
+   }
 
 
     func updateCurrentExercise(_ exercise: String) {
@@ -742,6 +754,7 @@ struct WebViewWrapper: UIViewRepresentable {
     let userId: String
     let data: [String: Any]?
     @Binding var isLoading: Bool
+    @Binding var hasFinishedLoading: Bool
     var onMessageReceived: (WebViewMessage) -> Void
     @ObservedObject var webViewState: WebViewState
     func makeUIView(context: Context) -> WKWebView {
@@ -804,19 +817,22 @@ struct WebViewWrapper: UIViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            parent.isLoading = false
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                
-                var script = "window.postMessage({ 'key': '\(self.parent.apiKey)', 'company': '\(self.parent.companyName)', 'userId': '\(self.parent.userId)', 'exercises': \(self.jsonString(from: self.parent.data?["exercises"] as? [String] ?? [])), 'currentExercise': '\(self.parent.data?["currentExercise"] as? String ?? "")'"
-                if let data = self.parent.data {
-                    for (key, value) in data where key != "exercises" && key != "currentExercise" {
-                        script += ", '\(key)': '\(value)'"
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                self.parent.isLoading = false
+                withAnimation {
+                    // Update the parent view's state
+                    self.parent.hasFinishedLoading = true
+                    
+                }
+                webView.evaluateJavaScript(self.createPostMessageScript()) { (result, error) in
+                    if let error = error {
+                        print("⚠️ JavaScript Error: \(error.localizedDescription)")
                     }
                 }
-                script += "}, '\(self.parent.url)');"
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                 
-                webView.evaluateJavaScript(script) { (result, error) in
+                webView.evaluateJavaScript(self.createPostMessageScript()) { (result, error) in
                     if let error = error {
                         print("⚠️ JavaScript Error: \(error.localizedDescription)")
                     }
@@ -824,6 +840,19 @@ struct WebViewWrapper: UIViewRepresentable {
             }
         }
 
+        private func createPostMessageScript() -> String {
+            var script = "window.postMessage({ 'key': '\(self.parent.apiKey)', 'company': '\(self.parent.companyName)', 'userId': '\(self.parent.userId)', 'exercises': \(self.jsonString(from: self.parent.data?["exercises"] as? [String] ?? [])), 'currentExercise': '\(self.parent.data?["currentExercise"] as? String ?? "")'"
+            if let data = self.parent.data {
+                for (key, value) in data where key != "exercises" && key != "currentExercise" {
+                    script += ", '\(key)': '\(value)'"
+                }
+            }
+            script += "}, '\(self.parent.url)');"
+            
+            
+            return script
+        }
+        
         func jsonString(from array: [String]) -> String {
             if let data = try? JSONSerialization.data(withJSONObject: array, options: []),
                let jsonString = String(data: data, encoding: .utf8) {
