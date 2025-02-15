@@ -692,7 +692,6 @@ private struct GenericWebView: View {
     @Binding var isLoading: Bool
     var onMessageReceived: (WebViewMessage) -> Void
     @ObservedObject var webViewState = WebViewState()
-    @State var hasFinishedInitialLoad = false
 
     public init(apiKey: String, companyName: String, userId: String, url: URL, data: [String: Any]?, isLoading: Binding<Bool>, onMessageReceived: @escaping (WebViewMessage) -> Void) {
         self.apiKey = apiKey
@@ -713,12 +712,11 @@ private struct GenericWebView: View {
                      userId: userId,
                      data: data,
                      isLoading: $isLoading,
-                     hasFinishedLoading: $hasFinishedInitialLoad,
                      onMessageReceived: onMessageReceived,
                      webViewState: webViewState
                  )
                  
-                 if !hasFinishedInitialLoad {
+            if isLoading {
                      Color.black
                  }
              }
@@ -754,7 +752,6 @@ struct WebViewWrapper: UIViewRepresentable {
     let userId: String
     let data: [String: Any]?
     @Binding var isLoading: Bool
-    @Binding var hasFinishedLoading: Bool
     var onMessageReceived: (WebViewMessage) -> Void
     @ObservedObject var webViewState: WebViewState
     func makeUIView(context: Context) -> WKWebView {
@@ -813,16 +810,15 @@ struct WebViewWrapper: UIViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-            parent.isLoading = true
+            if !parent.isLoading {
+                parent.isLoading = true
+            }
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.parent.isLoading = false
                 withAnimation {
-                    // Update the parent view's state
-                    self.parent.hasFinishedLoading = true
-                    
+                    self.parent.isLoading = false
                 }
                 webView.evaluateJavaScript(self.createPostMessageScript()) { (result, error) in
                     if let error = error {
