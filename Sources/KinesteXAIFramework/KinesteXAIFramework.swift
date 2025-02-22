@@ -971,6 +971,7 @@ public struct ExerciseModel: Codable {
     public let common_mistakes: String
     public let steps: [String]
     public let tips: String
+    public let model_id: String
 }
 
 /// PlanModel represents a workout plan containing structured workouts at various levels.
@@ -1131,7 +1132,8 @@ extension DataProcessor {
                     dif_level: item.dif_level ?? "Medium",
                     common_mistakes: item.common_mistakes ?? "",
                     steps: processSteps(item.steps),
-                    tips: item.tips ?? ""
+                    tips: item.tips ?? "",
+                    model_id: item.model_id ?? "NA"
                 )
             }
             return ExerciseResponse(exercises: exercises, lastDocId: items.lastDocId)
@@ -1256,7 +1258,8 @@ struct DataProcessor {
                     dif_level: item.dif_level ?? "Medium",
                     common_mistakes: item.common_mistakes ?? "",
                     steps: processSteps(item.steps),
-                    tips: item.tips ?? ""
+                    tips: item.tips ?? "",
+                    model_id: item.model_id ?? "NA"
                 )
             } catch let error as DecodingError {
                 switch error {
@@ -1305,7 +1308,8 @@ struct DataProcessor {
                 dif_level: item.dif_level ?? "Medium",
                 common_mistakes: item.common_mistakes ?? "",
                 steps: processSteps(item.steps),
-                tips: item.tips ?? ""
+                tips: item.tips ?? "",
+                model_id: item.model_id ?? "NA"
             )
             
             exercises.append(exercise)
@@ -1359,6 +1363,7 @@ private struct RawSequenceItem: Codable {
     let common_mistakes: String?
     let workout_repeats: Int?
     let workout_countdown: Int?
+    let model_id: String?
 }
 
 
