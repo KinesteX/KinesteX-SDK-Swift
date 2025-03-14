@@ -453,6 +453,12 @@ public struct KinesteXAIFramework {
             self.cameraWebView?.updateCurrentExercise(exercise)
         }
     }
+    
+    public static func updateCurrentRestSpeech(_ restSpeech: String) {
+        DispatchQueue.main.async {
+            self.cameraWebView?.updateCurrentRestSpeech(restSpeech)
+        }
+    }
 
     private static func validateInput(apiKey: String, companyName: String, userId: String, planCategory: PlanCategory) -> String? {
         if containsDisallowedCharacters(apiKey) || containsDisallowedCharacters(companyName) || containsDisallowedCharacters(userId) {
@@ -743,6 +749,24 @@ private struct GenericWebView: View {
         }
     }
 
+    func updateCurrentRestSpeech(_ restSpeech: String) {
+        guard let webView = webViewState.webView else {
+            print("⚠️ WebView is not available")
+            return
+        }
+
+        let script = """
+        window.postMessage({ 'currentRestSpeech': '\(restSpeech)' }, '*');
+        """
+
+        webView.evaluateJavaScript(script) { result, error in
+            if let error = error {
+                print("⚠️ JavaScript Error: \(error.localizedDescription)")
+            } else {
+                print("✅ Successfully sent an update")
+            }
+        }
+    }
 }
 
 struct WebViewWrapper: UIViewRepresentable {
