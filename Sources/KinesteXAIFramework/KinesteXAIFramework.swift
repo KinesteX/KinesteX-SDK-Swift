@@ -861,17 +861,31 @@ struct WebViewWrapper: UIViewRepresentable {
         }
 
         private func createPostMessageScript() -> String {
-            var script = "window.postMessage({ 'key': '\(self.parent.apiKey)', 'company': '\(self.parent.companyName)', 'userId': '\(self.parent.userId)', 'exercises': \(self.jsonString(from: self.parent.data?["exercises"] as? [String] ?? [])), 'currentExercise': '\(self.parent.data?["currentExercise"] as? String ?? "")'"
+            var scriptData: [String: Any] = [
+                "key": self.parent.apiKey,
+                "company": self.parent.companyName,
+                "userId": self.parent.userId,
+                "exercises": self.parent.data?["exercises"] as? [String] ?? [],
+                "currentExercise": self.parent.data?["currentExercise"] as? String ?? ""
+            ]
+            
+            // Add all other data properties
             if let data = self.parent.data {
                 for (key, value) in data where key != "exercises" && key != "currentExercise" {
-                    script += ", '\(key)': '\(value)'"
+                    scriptData[key] = value
                 }
             }
-            script += "}, '\(self.parent.url)');"
             
+            // Convert the entire data object to JSON
+            if let jsonData = try? JSONSerialization.data(withJSONObject: scriptData, options: []),
+               let jsonString = String(data: jsonData, encoding: .utf8) {
+                return "window.postMessage(\(jsonString), '\(self.parent.url)');"
+            }
             
-            return script
+            // Fallback if JSON serialization fails
+            return "window.postMessage({ 'key': '\(self.parent.apiKey)', 'company': '\(self.parent.companyName)', 'userId': '\(self.parent.userId)' }, '\(self.parent.url)');"
         }
+
         
         func jsonString(from array: [String]) -> String {
             if let data = try? JSONSerialization.data(withJSONObject: array, options: []),
