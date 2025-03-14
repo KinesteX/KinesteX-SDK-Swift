@@ -964,6 +964,8 @@ public struct ExerciseModel: Codable {
     public let avg_reps: Int?
     public let avg_countdown: Int?
     public let rest_duration: Int?
+    public let rest_speech: String
+    public let rest_speech_text: String
     public let avg_cal: Double?
     public let body_parts: [String]
     public let description: String
@@ -1126,6 +1128,8 @@ extension DataProcessor {
                     avg_reps: item.repeats,
                     avg_countdown: item.countdown,
                     rest_duration: 10,
+                    rest_speech: item.rest_speech ?? "",
+                    rest_speech_text: item.rest_speech_text ?? "",
                     avg_cal: item.calories,
                     body_parts: item.body_parts ?? [],
                     description: item.description ?? "Missing exercise description",
@@ -1252,6 +1256,8 @@ struct DataProcessor {
                     avg_reps: item.repeats,
                     avg_countdown: item.countdown,
                     rest_duration: 10,
+                    rest_speech: item.rest_speech ?? "",
+                    rest_speech_text: item.rest_speech_text ?? "",
                     avg_cal: item.calories,
                     body_parts: item.body_parts ?? [],
                     description: item.description ?? "Missing exercise description",
@@ -1300,8 +1306,10 @@ struct DataProcessor {
                 workout_countdown: item.workout_countdown, // Convert to milliseconds
                 workout_reps: item.workout_repeats,
                 avg_reps: item.workout_repeats,
-                avg_countdown: item.repeats,
+                avg_countdown: item.countdown,
                 rest_duration: currentRestDuration,
+                rest_speech: item.rest_speech ?? "",
+                rest_speech_text: item.rest_speech_text ?? "",
                 avg_cal: item.calories,
                 body_parts: item.body_parts ?? [],
                 description: item.description ?? "Missing exercise description",
@@ -1360,6 +1368,8 @@ private struct RawSequenceItem: Codable {
     let description: String?
     let steps: [String?]?
     let tips: String?
+    let rest_speech: String?
+    let rest_speech_text: String?
     let common_mistakes: String?
     let workout_repeats: Int?
     let workout_countdown: Int?
