@@ -149,7 +149,7 @@ public struct KinesteXAIFramework {
         let validationError = validateInput(apiKey: apiKey, companyName: companyName, userId: userId, planCategory: planCategory)
         
         if let error = validationError {
-            print("⚠️ Validation Error: \(error)")
+            print("⚠️ KinesteX: Validation Error: \(error)")
             return AnyView(EmptyView())
         } else {
             var data: [String: Any] = [
@@ -166,7 +166,7 @@ public struct KinesteXAIFramework {
             // Add custom parameters if they are valid
             for (key, value) in customParams {
                 if containsDisallowedCharacters(key) || (value as? String).map(containsDisallowedCharacters) == true {
-                    print("⚠️ Validation Error: Custom parameter key or value contains disallowed characters")
+                    print("⚠️ KinesteX: Validation Error: Custom parameter key or value contains disallowed characters")
                     return AnyView(EmptyView())
                 } else {
                     data[key] = value
@@ -192,7 +192,7 @@ public struct KinesteXAIFramework {
      */
     public static func createPlanView(apiKey: String, companyName: String, userId: String, planName: String, user: UserDetails?, isLoading: Binding<Bool>, customParams: [String: Any] = [:], onMessageReceived: @escaping (WebViewMessage) -> Void) -> AnyView {
         if containsDisallowedCharacters(apiKey) || containsDisallowedCharacters(companyName) || containsDisallowedCharacters(userId) || containsDisallowedCharacters(planName) {
-            print("⚠️ Validation Error: apiKey, companyName, userId, or planName contains disallowed characters")
+            print("⚠️ KinesteX: Validation Error: apiKey, companyName, userId, or planName contains disallowed characters")
             return AnyView(EmptyView())
         } else {
             let adjustedPlanName = planName.replacingOccurrences(of: " ", with: "%20")
@@ -208,7 +208,7 @@ public struct KinesteXAIFramework {
             // Add custom parameters if they are valid
             for (key, value) in customParams {
                 if containsDisallowedCharacters(key) || (value as? String).map(containsDisallowedCharacters) == true {
-                    print("⚠️ Validation Error: Custom parameter key or value contains disallowed characters")
+                    print("⚠️ KinesteX: Validation Error: Custom parameter key or value contains disallowed characters")
                     return AnyView(EmptyView())
                 } else {
                     data[key] = value
@@ -232,7 +232,7 @@ public struct KinesteXAIFramework {
     */
     public static func createWorkoutView(apiKey: String, companyName: String, userId: String, workoutName: String, user: UserDetails?, isLoading: Binding<Bool>, customParams: [String: Any] = [:], onMessageReceived: @escaping (WebViewMessage) -> Void) -> AnyView {
         if containsDisallowedCharacters(apiKey) || containsDisallowedCharacters(companyName) || containsDisallowedCharacters(userId) || containsDisallowedCharacters(workoutName) {
-            print("⚠️ Validation Error: apiKey, companyName, userId, or workoutName contains disallowed characters")
+            print("⚠️ KinesteX: Validation Error: apiKey, companyName, userId, or workoutName contains disallowed characters")
             return AnyView(EmptyView())
         } else {
             let adjustedWorkoutName = workoutName.replacingOccurrences(of: " ", with: "%20")
@@ -248,7 +248,7 @@ public struct KinesteXAIFramework {
             // Add custom parameters if they are valid
             for (key, value) in customParams {
                 if containsDisallowedCharacters(key) || (value as? String).map(containsDisallowedCharacters) == true {
-                    print("⚠️ Validation Error: Custom parameter key or value contains disallowed characters")
+                    print("⚠️ KinesteX: Validation Error: Custom parameter key or value contains disallowed characters")
                     return AnyView(EmptyView())
                 } else {
                     data[key] = value
@@ -273,7 +273,7 @@ public struct KinesteXAIFramework {
     */
     public static func createExperienceView(apiKey: String, companyName: String, userId: String, experience: String, user: UserDetails?, isLoading: Binding<Bool>, customParams: [String: Any] = [:], onMessageReceived: @escaping (WebViewMessage) -> Void) -> AnyView {
         if containsDisallowedCharacters(apiKey) || containsDisallowedCharacters(companyName) || containsDisallowedCharacters(userId) || containsDisallowedCharacters(experience) {
-            print("⚠️ Validation Error: apiKey, companyName, userId, or workoutName contains disallowed characters")
+            print("⚠️ KinesteX: Validation Error: apiKey, companyName, userId, or workoutName contains disallowed characters")
             return AnyView(EmptyView())
         } else {
             let adjustedExperienceName = experience.replacingOccurrences(of: " ", with: "%20").lowercased()
@@ -289,7 +289,7 @@ public struct KinesteXAIFramework {
             // Add custom parameters if they are valid
             for (key, value) in customParams {
                 if containsDisallowedCharacters(key) || (value as? String).map(containsDisallowedCharacters) == true {
-                    print("⚠️ Validation Error: Custom parameter key or value contains disallowed characters")
+                    print("⚠️ KinesteX: Validation Error: Custom parameter key or value contains disallowed characters")
                     return AnyView(EmptyView())
                 } else {
                     data[key] = value
@@ -314,7 +314,7 @@ public struct KinesteXAIFramework {
     */
     public static func createChallengeView(apiKey: String, companyName: String, userId: String, exercise: String = "Squats", countdown: Int, user: UserDetails?, showLeaderboard: Bool = true, isLoading: Binding<Bool>, customParams: [String: Any] = [:], onMessageReceived: @escaping (WebViewMessage) -> Void) -> AnyView {
         if containsDisallowedCharacters(apiKey) || containsDisallowedCharacters(companyName) || containsDisallowedCharacters(userId) || containsDisallowedCharacters(exercise) {
-            print("⚠️ Validation Error: apiKey, companyName, userId, or exercise contains disallowed characters")
+            print("⚠️ KinesteX: Validation Error: apiKey, companyName, userId, or exercise contains disallowed characters")
             return AnyView(EmptyView())
         } else {
             var data: [String: Any] = [
@@ -332,7 +332,7 @@ public struct KinesteXAIFramework {
             // Add custom parameters if they are valid
             for (key, value) in customParams {
                 if containsDisallowedCharacters(key) || (value as? String).map(containsDisallowedCharacters) == true {
-                    print("⚠️ Validation Error: Custom parameter key or value contains disallowed characters")
+                    print("⚠️ KinesteX: Validation Error: Custom parameter key or value contains disallowed characters")
                     return AnyView(EmptyView())
                 } else {
                     data[key] = value
@@ -344,7 +344,7 @@ public struct KinesteXAIFramework {
     
     public static func createLeaderboardView(apiKey: String, companyName: String, userId: String, exercise: String = "Squats", username: String = "", isLoading: Binding<Bool>, customParams: [String: Any] = [:], onMessageReceived: @escaping (WebViewMessage) -> Void) -> AnyView {
         if containsDisallowedCharacters(apiKey) || containsDisallowedCharacters(companyName) || containsDisallowedCharacters(userId) || containsDisallowedCharacters(exercise) || containsDisallowedCharacters(username) {
-            print("⚠️ Validation Error: apiKey, companyName, userId, exercise, or username contains disallowed characters")
+            print("⚠️ KinesteX: Validation Error: apiKey, companyName, userId, exercise, or username contains disallowed characters")
             return AnyView(EmptyView())
         } else {
             var data: [String: Any] = [
@@ -359,7 +359,7 @@ public struct KinesteXAIFramework {
             // Add custom parameters if they are valid
             for (key, value) in customParams {
                 if containsDisallowedCharacters(key) || (value as? String).map(containsDisallowedCharacters) == true {
-                    print("⚠️ Validation Error: Custom parameter key or value contains disallowed characters")
+                    print("⚠️ KinesteX: Validation Error: Custom parameter key or value contains disallowed characters")
                     return AnyView(EmptyView())
                 } else {
                     data[key] = value
@@ -407,12 +407,12 @@ public struct KinesteXAIFramework {
     public static func createCameraComponent(apiKey: String, companyName: String, userId: String, exercises: [String], currentExercise: String, user: UserDetails?, isLoading: Binding<Bool>, customParams: [String: Any] = [:], onMessageReceived: @escaping (WebViewMessage) -> Void) -> AnyView {
         for exercise in exercises {
             if containsDisallowedCharacters(exercise) {
-                print("⚠️ Validation Error: \(exercise) contains disallowed characters")
+                print("⚠️ KinesteX: Validation Error: \(exercise) contains disallowed characters")
                 return AnyView(EmptyView())
             }
         }
         if containsDisallowedCharacters(apiKey) || containsDisallowedCharacters(companyName) || containsDisallowedCharacters(userId) || containsDisallowedCharacters(currentExercise) {
-            print("⚠️ Validation Error: apiKey, companyName, userId, or currentExercise contains disallowed characters")
+            print("⚠️ KinesteX: Validation Error: apiKey, companyName, userId, or currentExercise contains disallowed characters")
             return AnyView(EmptyView())
         } else {
             var data: [String: Any] = [
@@ -429,21 +429,22 @@ public struct KinesteXAIFramework {
             // Add custom parameters if they are valid
             for (key, value) in customParams {
                 if containsDisallowedCharacters(key) || (value as? String).map(containsDisallowedCharacters) == true {
-                    print("⚠️ Validation Error: Custom parameter key or value contains disallowed characters")
+                    print("⚠️ KinesteX: Validation Error: Custom parameter key or value contains disallowed characters")
                     return AnyView(EmptyView())
                 } else {
                     data[key] = value
                 }
             }
       
-                let cameraWebViewInstance = GenericWebView(apiKey: apiKey, companyName: companyName, userId: userId, url: URL(string: "https://kinestex.vercel.app/camera")!, data: data, isLoading: isLoading, onMessageReceived: onMessageReceived)
-                self.cameraWebView = cameraWebViewInstance
-            
-            return AnyView(cameraWebViewInstance)
+            if cameraWebView == nil {
+                 let cameraWebViewInstance = GenericWebView(apiKey: apiKey, companyName: companyName, userId: userId, url: URL(string: "https://kinestex.vercel.app/camera")!, data: data, isLoading: isLoading, onMessageReceived: onMessageReceived)
+                 self.cameraWebView = cameraWebViewInstance
+            }
+          return AnyView(cameraWebView!)
         }
     }
     public static func clearCameraWebView() {
-        print("Resetting camera component")
+        print("🔄 KinesteX: Resetting camera component")
         self.cameraWebView = nil
     }
     /**
@@ -731,12 +732,18 @@ private struct GenericWebView: View {
                  }
              }
              .background(Color.black)
+             .onDisappear {
+                 if url.absoluteString.contains("/camera") {
+                     KinesteXAIFramework.clearCameraWebView()
+                 }
+             }
+
    }
 
 
     func updateCurrentExercise(_ exercise: String) {
         guard let webView = webViewState.webView else {
-            print("⚠️ WebView is not available")
+            print("⚠️ KinesteX: WebView is not available")
             return
         }
 
@@ -746,16 +753,16 @@ private struct GenericWebView: View {
 
         webView.evaluateJavaScript(script) { result, error in
             if let error = error {
-                print("⚠️ JavaScript Error: \(error.localizedDescription)")
+                print("⚠️ KinesteX: JavaScript Error: \(error.localizedDescription)")
             } else {
-                print("✅ Successfully sent an update")
+                print("✅ KinesteX: Successfully sent an update")
             }
         }
     }
 
     func updateCurrentRestSpeech(_ restSpeech: String) {
         guard let webView = webViewState.webView else {
-            print("⚠️ WebView is not available")
+            print("⚠️ KinesteX: WebView is not available")
             return
         }
 
@@ -765,9 +772,9 @@ private struct GenericWebView: View {
 
         webView.evaluateJavaScript(script) { result, error in
             if let error = error {
-                print("⚠️ JavaScript Error: \(error.localizedDescription)")
+                print("⚠️ KinesteX: JavaScript Error: \(error.localizedDescription)")
             } else {
-                print("✅ Successfully sent an update")
+                print("✅ KinesteX: Successfully sent an update")
             }
         }
     }
@@ -850,7 +857,7 @@ struct WebViewWrapper: UIViewRepresentable {
                 }
                 webView.evaluateJavaScript(self.createPostMessageScript()) { (result, error) in
                     if let error = error {
-                        print("⚠️ JavaScript Error: \(error.localizedDescription)")
+                        print("⚠️ KinesteX: JavaScript Error: \(error.localizedDescription)")
                     }
                 }
             }
@@ -858,7 +865,7 @@ struct WebViewWrapper: UIViewRepresentable {
                 
                 webView.evaluateJavaScript(self.createPostMessageScript()) { (result, error) in
                     if let error = error {
-                        print("⚠️ JavaScript Error: \(error.localizedDescription)")
+                        print("⚠️ KinesteX: JavaScript Error: \(error.localizedDescription)")
                     }
                 }
             }
@@ -900,7 +907,7 @@ struct WebViewWrapper: UIViewRepresentable {
         }
 
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-            print("Received message: \(message.body)")
+            print("KinesteX: Received message: \(message.body)")
             if message.name == "listener", let messageBody = message.body as? String {
                 handle(message: messageBody)
             }
@@ -910,7 +917,7 @@ struct WebViewWrapper: UIViewRepresentable {
             guard let data = message.data(using: .utf8),
                   let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                   let type = json["type"] as? String else {
-                print("Could not parse JSON message from WebView.")
+                print("KinesteX: Could not parse JSON message from WebView.")
                 return
             }
 
@@ -1115,7 +1122,7 @@ struct APIResponse: Codable {
 extension DataProcessor {
     static func processWorkoutsArray(_ data: Data) throws -> WorkoutsResponse {
         if let jsonString = String(data: data, encoding: .utf8) {
-            print("Raw Workout JSON: \(jsonString)")
+            print("KinesteX: Raw Workout JSON: \(jsonString)")
            }
            
            do {
@@ -1142,18 +1149,18 @@ extension DataProcessor {
                return workoutResp
            } catch let error as DecodingError {
                // Handle decoding errors
-               print("Decoding Error in processWorkoutData: \(error)")
+               print("KinesteX: Decoding Error in processWorkoutData: \(error)")
                throw error
            } catch {
                // Handle other errors
-               print("Unexpected error in processWorkoutData: \(error)")
+               print("KinesteX: Unexpected error in processWorkoutData: \(error)")
                throw error
         }
     }
     
     static func processExercisesArray(_ data: Data) throws -> ExerciseResponse {
         if let jsonString = String(data: data, encoding: .utf8) {
-            print("Raw Exercises Array JSON: \(jsonString)")
+            print("KinesteX: Raw Exercises Array JSON: \(jsonString)")
         }
         
         do {
@@ -1184,21 +1191,21 @@ extension DataProcessor {
             }
             return ExerciseResponse(exercises: exercises, lastDocId: items.lastDocId)
         } catch {
-            print("Error processing exercises array: \(error)")
+            print("KinesteX: Error processing exercises array: \(error)")
             throw error
         }
     }
     
     static func processPlansArray(_ data: Data) throws -> PlansResponse {
         if let jsonString = String(data: data, encoding: .utf8) {
-            print("Raw Plans Array JSON: \(jsonString)")
+            print("KinesteX: Raw Plans Array JSON: \(jsonString)")
         }
         
         do {
             let decoder = JSONDecoder()
             return try decoder.decode(PlansResponse.self, from: data)
         } catch {
-            print("Error processing plans array: \(error)")
+            print("KinesteX: Error processing plans array: \(error)")
             throw error
         }
     }
@@ -1210,7 +1217,7 @@ struct DataProcessor {
     static func processPlanData(_ data: Data) throws -> PlanModel {
            // Log raw JSON
            if let jsonString = String(data: data, encoding: .utf8) {
-               print("Raw Plan JSON: \(jsonString)")
+               print("KinesteX: Raw Plan JSON: \(jsonString)")
            }
            
            do {
@@ -1219,19 +1226,19 @@ struct DataProcessor {
            } catch let error as DecodingError {
                switch error {
                case .keyNotFound(let key, let context):
-                   print("Missing key '\(key.stringValue)' in PlanModel: \(context.debugDescription)")
+                   print("KinesteX: Missing key '\(key.stringValue)' in PlanModel: \(context.debugDescription)")
                case .typeMismatch(let type, let context):
-                   print("Type mismatch for type '\(type)' in PlanModel: \(context.debugDescription)")
+                   print("KinesteX: Type mismatch for type '\(type)' in PlanModel: \(context.debugDescription)")
                case .valueNotFound(let value, let context):
-                   print("Value '\(value)' not found in PlanModel: \(context.debugDescription)")
+                   print("KinesteX: Value '\(value)' not found in PlanModel: \(context.debugDescription)")
                case .dataCorrupted(let context):
-                   print("Data corrupted in PlanModel: \(context.debugDescription)")
+                   print("KinesteX: Data corrupted in PlanModel: \(context.debugDescription)")
                default:
-                   print("Unknown DecodingError in PlanModel: \(error)")
+                   print("KinesteX: Unknown DecodingError in PlanModel: \(error)")
                }
                throw error
            } catch {
-               print("Unexpected error in PlanModel decoding: \(error.localizedDescription)")
+               print("KinesteX: Unexpected error in PlanModel decoding: \(error.localizedDescription)")
                throw error
            }
        }
@@ -1239,7 +1246,7 @@ struct DataProcessor {
     static func processWorkoutData(_ data: Data) throws -> WorkoutModel {
             // Log raw JSON
             if let jsonString = String(data: data, encoding: .utf8) {
-                print("Raw Workout JSON: \(jsonString)")
+                print("KinesteX: Raw Workout JSON: \(jsonString)")
             }
             
             do {
@@ -1261,19 +1268,19 @@ struct DataProcessor {
             } catch let error as DecodingError {
                 switch error {
                 case .keyNotFound(let key, let context):
-                    print("Missing key '\(key.stringValue)' in WorkoutModel: \(context.debugDescription)")
+                    print("KinesteX: Missing key '\(key.stringValue)' in WorkoutModel: \(context.debugDescription)")
                 case .typeMismatch(let type, let context):
-                    print("Type mismatch for type '\(type)' in WorkoutModel: \(context.debugDescription)")
+                    print("KinesteX: Type mismatch for type '\(type)' in WorkoutModel: \(context.debugDescription)")
                 case .valueNotFound(let value, let context):
-                    print("Value '\(value)' not found in WorkoutModel: \(context.debugDescription)")
+                    print("KinesteX: Value '\(value)' not found in WorkoutModel: \(context.debugDescription)")
                 case .dataCorrupted(let context):
-                    print("Data corrupted in WorkoutModel: \(context.debugDescription)")
+                    print("KinesteX: Data corrupted in WorkoutModel: \(context.debugDescription)")
                 default:
-                    print("Unknown DecodingError in WorkoutModel: \(error)")
+                    print("KinesteX: Unknown DecodingError in WorkoutModel: \(error)")
                 }
                 throw error
             } catch {
-                print("Unexpected error in WorkoutModel decoding: \(error.localizedDescription)")
+                print("KinesteX: Unexpected error in WorkoutModel decoding: \(error.localizedDescription)")
                 throw error
             }
         }
@@ -1281,7 +1288,7 @@ struct DataProcessor {
     static func processExerciseData(_ data: Data) throws -> ExerciseModel {
             // Log raw JSON
             if let jsonString = String(data: data, encoding: .utf8) {
-                print("Raw Exercise JSON: \(jsonString)")
+                print("KinesteX: Raw Exercise JSON: \(jsonString)")
             }
             
             do {
@@ -1312,19 +1319,19 @@ struct DataProcessor {
             } catch let error as DecodingError {
                 switch error {
                 case .keyNotFound(let key, let context):
-                    print("Missing key '\(key.stringValue)' in ExerciseModel: \(context.debugDescription)")
+                    print("KinesteX: Missing key '\(key.stringValue)' in ExerciseModel: \(context.debugDescription)")
                 case .typeMismatch(let type, let context):
-                    print("Type mismatch for type '\(type)' in ExerciseModel: \(context.debugDescription)")
+                    print("KinesteX: Type mismatch for type '\(type)' in ExerciseModel: \(context.debugDescription)")
                 case .valueNotFound(let value, let context):
-                    print("Value '\(value)' not found in ExerciseModel: \(context.debugDescription)")
+                    print("KinesteX: Value '\(value)' not found in ExerciseModel: \(context.debugDescription)")
                 case .dataCorrupted(let context):
-                    print("Data corrupted in ExerciseModel: \(context.debugDescription)")
+                    print("KinesteX: Data corrupted in ExerciseModel: \(context.debugDescription)")
                 default:
-                    print("Unknown DecodingError in ExerciseModel: \(error)")
+                    print("KinesteX: Unknown DecodingError in ExerciseModel: \(error)")
                 }
                 throw error
             } catch {
-                print("Unexpected error in ExerciseModel decoding: \(error.localizedDescription)")
+                print("KinesteX: Unexpected error in ExerciseModel decoding: \(error.localizedDescription)")
                 throw error
             }
         }
