@@ -435,12 +435,16 @@ public struct KinesteXAIFramework {
                     data[key] = value
                 }
             }
-            if cameraWebView == nil {
+      
                 let cameraWebViewInstance = GenericWebView(apiKey: apiKey, companyName: companyName, userId: userId, url: URL(string: "https://kinestex.vercel.app/camera")!, data: data, isLoading: isLoading, onMessageReceived: onMessageReceived)
                 self.cameraWebView = cameraWebViewInstance
-            }
-            return AnyView(cameraWebView!)
+            
+            return AnyView(cameraWebViewInstance)
         }
+    }
+    public static func clearCameraWebView() {
+        print("Resetting camera component")
+        self.cameraWebView = nil
     }
     /**
       Updates the current exercise in the camera component.
