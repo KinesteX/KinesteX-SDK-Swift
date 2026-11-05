@@ -1,3 +1,10 @@
+> [!WARNING]
+> **This package is deprecated and no longer maintained.** It will not get new features or fixes.
+>
+> Move new and existing integrations to [KinesteX AI Kit](https://github.com/KinesteX/KinesteX-AI-Kit), the Swift package `KinesteXAIKit`. All current iOS development happens there.
+>
+> For setup, follow the Installation and Quick Start sections of the [KinesteX AI Kit README](https://github.com/KinesteX/KinesteX-AI-Kit#readme).
+
 # [Precise Motion Tracking and Analysis SDK](https://kinestex.com)
 #### Stay Ahead with KinesteX AI Motion Tracking and Analysis.
 [Demo Video](https://github.com/V-m1r/KinesteX-B2B-AI-Fitness-and-Physio/assets/62508191/ac4817ca-9257-402d-81db-74e95060b153)
